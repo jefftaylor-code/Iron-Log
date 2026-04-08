@@ -60,14 +60,14 @@
     /* sets - compact mobile layout */
     .sets-wrap{display:flex;flex-direction:column;gap:6px}
     .set-block{border:1px solid var(--border);border-radius:9px;overflow:hidden;transition:opacity 0.2s}
-    .set-block.done{opacity:0.4}
+    .set-block.done{border-color:var(--success);border-left:3px solid var(--success);}
     .set-top{display:flex;align-items:stretch}
     .set-num{width:32px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
     .set-inputs{display:flex;flex:1;min-width:0}
     .set-field{flex:1;display:flex;flex-direction:column;border-left:1px solid var(--border);min-width:0}
     .set-field-lbl{font-size:8px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:3px 6px 0;font-weight:700}
     .set-input{width:100%;background:transparent;border:none;color:var(--text);font-size:17px;font-weight:600;padding:1px 6px 5px;text-align:center;outline:none;min-width:0}
-    .set-input.done{text-decoration:line-through;color:var(--text3)}
+    .set-input-done{color:var(--text3);border-bottom:1px solid var(--success);}
     .set-done-strip{border-top:1px solid var(--border);display:flex}
     .done-btn{flex:1;background:none;border:none;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:0.8px;padding:7px 8px;text-transform:uppercase;transition:background 0.15s,color 0.15s;text-align:center}
     .notes-input{background:transparent;border:none;border-top:1px solid var(--border);color:var(--text3);font-size:11px;padding:8px 0 0;outline:none;width:100%}
@@ -401,18 +401,18 @@ function buildCard(row,idx){
       +'<div class="set-inputs">'
       +'<div class="set-field">'
       +'<div class="set-field-lbl">Weight lbs</div>'
-      +'<input class="set-input'+(s.done?" done":"")+'" type="number" inputmode="decimal" value="'+escHtml(s.weight)+'" placeholder="-"'
+      +'<input class="set-input'+(s.done?" set-input-done":"")+'" type="number" inputmode="decimal" value="'+escHtml(s.weight)+'" placeholder="-"'
       +' data-rowid="'+row.id+'" data-si="'+si+'" data-field="weight" oninput="onSetInput(this)"/>'
       +'</div>'
       +'<div class="set-field">'
       +'<div class="set-field-lbl">Reps</div>'
-      +'<input class="set-input'+(s.done?" done":"")+'" type="number" inputmode="numeric" value="'+escHtml(s.reps)+'" placeholder="-"'
+      +'<input class="set-input'+(s.done?" set-input-done":"")+'" type="number" inputmode="numeric" value="'+escHtml(s.reps)+'" placeholder="-"'
       +' data-rowid="'+row.id+'" data-si="'+si+'" data-field="reps" oninput="onSetInput(this)"/>'
       +'</div>'
       +'</div>'
       +'</div>'
       +'<div class="set-done-strip">'
-      +'<button class="done-btn" style="background:'+(s.done?color+"22":"transparent")+';color:'+(s.done?color:"#555")+'"'
+      +'<button class="done-btn" style="background:'+(s.done?color+"33":"transparent")+';color:'+(s.done?color:"#aaa")+'"'
       +' data-rowid="'+row.id+'" data-si="'+si+'" onclick="onDoneBtn(this)">'
       +(s.done?"&#10003; SET DONE  TAP TO UNDO":"TAP WHEN SET DONE")
       +'</button>'
@@ -503,10 +503,18 @@ function onSelect(el){
 }
 
 function onSetInput(el){
-  const rowId=el.dataset.rowid,si=parseInt(el.dataset.si),field=el.dataset.field;
-  const row=rows.find(function(r){return r.id===rowId;});
+  var rowId=el.dataset.rowid,si=parseInt(el.dataset.si),field=el.dataset.field;
+  var row=rows.find(function(r){return r.id===rowId;});
   if(!row) return;
   row.sets[si][field]=el.value;
+  // Propagate weight forward to subsequent undone sets
+  if(field==="weight"&&el.value){
+    for(var j=si+1;j<row.sets.length;j++){
+      row.sets[j].weight=el.value;
+      var inp=document.querySelector('[id="sb-'+rowId+'-'+j+'"] input[data-field="weight"]');
+      if(inp) inp.value=el.value;
+    }
+  }
   row.synced=false;persist();updateFooter();
 }
 
@@ -526,7 +534,7 @@ function onDoneBtn(el){
     sb.className="set-block"+(s.done?" done":"");
     const numEl=sb.querySelector(".set-num");
     if(numEl){numEl.innerHTML=s.done?"&#10003;":(si+1);numEl.style.background=s.done?"#2a2a30":color;}
-    sb.querySelectorAll(".set-input").forEach(function(inp){inp.className="set-input"+(s.done?" done":"");});
+    sb.querySelectorAll(".set-input").forEach(function(inp){inp.className="set-input"+(s.done?" set-input-done":"");});
     const btn=sb.querySelector(".done-btn");
     if(btn){
       btn.style.background=s.done?color+"22":"transparent";
@@ -609,36 +617,19 @@ function cancelTimer(){
 
 // ── TECHNIQUE TIPS ─────────────────────────────────────────
 function openTip(exName,group){
-  document.getElementById("tipTitle").textContent=exName;
-  document.getElementById("tipOverlay").style.display="flex";
-  const emoji=GROUP_EMOJI[group]||"💪";
-  const gifId=GIF_IDS[exName];
-  const tipLines=TIPS[exName]||defaultTip;
-
-  // Render tips immediately from local data — no API call, no network dependency
-  const tipHtml='<div class="tip-content">'+tipLines.map(function(l){
-    return '<div class="tip-line"><span class="tip-bullet">&#x203A;</span><span>'+escHtml(l)+'</span></div>';
-  }).join("")+'</div>';
-
-  // Show emoji first, attempt GIF load in background
-  document.getElementById("tipBody")='<div class="tip-emoji">'+emoji+'</div>'+tipHtml;
-  document.getElementById("tipBody").innerHTML='<div class="tip-emoji">'+emoji+'</div>'+tipHtml;
-
-  // Try to load GIF asynchronously — graceful fallback already shown
-  if(gifId){
-    fetch("https://exercisedb.p.rapidapi.com/exercises/exercise/"+gifId,
-      {headers:{"x-rapidapi-key":"DEMO","x-rapidapi-host":"exercisedb.p.rapidapi.com"}})
-    .then(function(r){return r.ok?r.json():null;})
-    .then(function(d){
-      if(d&&d.gifUrl){
-        const imgWrap='<div class="tip-img-wrap"><img class="tip-img" src="'+d.gifUrl+'" onerror="this.parentElement.innerHTML=\'<div class=tip-emoji>'+emoji+'</div>\'"/></div>';
-        document.getElementById("tipBody").innerHTML=imgWrap+tipHtml;
-      }
-    })
-    .catch(function(){});// silently ignore — emoji fallback already showing
+  var overlay=document.getElementById("tipOverlay");
+  var titleEl=document.getElementById("tipTitle");
+  var bodyEl=document.getElementById("tipBody");
+  titleEl.textContent=exName;
+  overlay.style.display="flex";
+  var emoji=GROUP_EMOJI[group]||"💪";
+  var tipLines=TIPS[exName]||defaultTip;
+  var lines="";
+  for(var i=0;i<tipLines.length;i++){
+    lines+='<div class="tip-line"><span class="tip-bullet">&#x203A;</span><span>'+escHtml(tipLines[i])+'</span></div>';
   }
+  bodyEl.innerHTML='<div class="tip-emoji">'+emoji+'</div><div class="tip-content">'+lines+'</div>';
 }
-
 function closeTip(){document.getElementById("tipOverlay").style.display="none";}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){cancelTimer();closeTip();}});
 
