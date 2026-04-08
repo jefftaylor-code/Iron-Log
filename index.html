@@ -142,12 +142,12 @@ var GROUP_COLORS={Push:"#4F8EF7",Pull:"#E05C5C",Legs:"#F5A623","Upper Strength":
 var GROUP_EMOJI={Push:"💪",Pull:"🏋️",Legs:"🦵","Upper Strength":"⚡",Cardio:"🏃",Core:"🎯"};
 
 var EXERCISE_MAP={
-  Push:["Chest Press Machine","Incline Dumbbell Press","Shoulder Press Machine","Lateral Raise (Dumbbells)","Tricep Pushdown (Cable)","Overhead Tricep Extension","Cable Fly","Pec Deck"],
-  Pull:["Lat Pulldown","Seated Cable Row","Machine Row","Face Pulls (Cable)","Dumbbell Curl","Hammer Curl","Assisted Pull-Up","Cable Curl"],
-  Legs:["Leg Press","Romanian Deadlift (Dumbbells)","Leg Curl Machine","Leg Extension Machine","Calf Raise Machine","Hip Abductor Machine","Goblet Squat","Step Up"],
-  "Upper Strength":["Chest Press Machine (heavy)","Lat Pulldown (heavy)","Shoulder Press Machine (heavy)","Machine Row (heavy)","Dumbbell Curl","Tricep Pushdown","Overhead Press","Barbell Row"],
-  Cardio:["Incline Treadmill Walk","Treadmill Run","Elliptical","Stationary Bike","Stair Climber","Row Machine"],
-  Core:["Plank","Cable Crunch","Seated Leg Raise","Ab Machine","Russian Twist","Dead Bug"]
+  Push:["★ Chest Press Machine","★ Incline Dumbbell Press","★ Shoulder Press Machine","★ Lateral Raise (Dumbbells)","★ Tricep Pushdown (Cable)","★ Overhead Tricep Extension","Cable Fly","Pec Deck"],
+  Pull:["★ Lat Pulldown","★ Seated Cable Row","★ Machine Row","★ Face Pulls (Cable)","★ Dumbbell Curl","★ Hammer Curl","Assisted Pull-Up","Cable Curl"],
+  Legs:["★ Leg Press","★ Romanian Deadlift (Dumbbells)","★ Leg Curl Machine","★ Leg Extension Machine","★ Calf Raise Machine","★ Hip Abductor Machine","Goblet Squat","Step Up"],
+  "Upper Strength":["★ Chest Press Machine (heavy)","★ Lat Pulldown (heavy)","★ Shoulder Press Machine (heavy)","★ Machine Row (heavy)","★ Dumbbell Curl","★ Tricep Pushdown","Overhead Press","Barbell Row"],
+  Cardio:["★ Incline Treadmill Walk","Treadmill Run","Elliptical","Stationary Bike","Stair Climber","Row Machine"],
+  Core:["★ Plank","★ Cable Crunch","★ Seated Leg Raise","Ab Machine","Russian Twist","Dead Bug"]
 };
 
 // Target sets x reps for each exercise
@@ -330,16 +330,18 @@ function uid(){return "r"+Date.now()+Math.floor(Math.random()*99999);}
 function loadLocal(k,d){try{var v=localStorage.getItem(k);return v!=null?JSON.parse(v):d;}catch(e){return d;}}
 function saveLocal(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function getHistory(){return loadLocal(HISTORY_KEY,{});}
-function saveHistory(name,sets){var h=getHistory();h[name]=sets.map(function(s){return{weight:String(s.weight||""),reps:String(s.reps||"")};});saveLocal(HISTORY_KEY,h);}
+function stripStar(name){return name?name.replace(/^★ /,""):name;}
+function saveHistory(name,sets){var h=getHistory();h[stripStar(name)]=sets.map(function(s){return{weight:String(s.weight||""),reps:String(s.reps||"")};});saveLocal(HISTORY_KEY,h);}
 function persist(){saveLocal(STORAGE_KEY,rows);}
 
 function getDefaultSets(name){
+  var cleanName=stripStar(name);
   var hist=getHistory();
-  if(hist[name]){
-    return hist[name].map(function(s){return{weight:String(s.weight||""),reps:String(s.reps||""),done:false};});
+  if(hist[cleanName]){
+    return hist[cleanName].map(function(s){return{weight:String(s.weight||""),reps:String(s.reps||""),done:false};});
   }
-  var ws=DEFAULTS[name];
-  var rs=DEFAULT_REPS[name];
+  var ws=DEFAULTS[cleanName];
+  var rs=DEFAULT_REPS[cleanName];
   if(ws&&rs){
     var len=Math.max(ws.length,rs.length);
     var arr=[];
@@ -384,12 +386,12 @@ function renderAll(){
 
 function buildCard(row,idx){
   var color=GROUP_COLORS[row.group]||"#555";
-  var displayName=row.exercise==="__custom__"?row.customExercise:row.exercise;
+  var displayName=row.exercise==="__custom__"?row.customExercise:stripStar(row.exercise);
   var hasEx=(row.exercise&&row.exercise!=="__custom__")||row.customExercise;
   var doneCount=0;
   for(var d=0;d<row.sets.length;d++){if(row.sets[d].done)doneCount++;}
   var isTimerRow=activeTimerRowId===row.id;
-  var target=TARGETS[row.exercise]||"";
+  var target=TARGETS[stripStar(row.exercise)]||"";
 
   var setsHtml="";
   for(var si=0;si<row.sets.length;si++){
@@ -616,7 +618,7 @@ function handleSync(){
   for(var j=0;j<unsynced.length;j++){
     var u=unsynced[j];
     values.push([
-      u.date,u.day,u.group,u.exercise==="__custom__"?u.customExercise:u.exercise,
+      u.date,u.day,u.group,u.exercise==="__custom__"?u.customExercise:stripStar(u.exercise),
       u.sets[0]?u.sets[0].weight||"":"",u.sets[0]?u.sets[0].reps||"":"",
       u.sets[1]?u.sets[1].weight||"":"",u.sets[1]?u.sets[1].reps||"":"",
       u.sets[2]?u.sets[2].weight||"":"",u.sets[2]?u.sets[2].reps||"":"",
@@ -670,12 +672,13 @@ function openTip(exName,group){
   var overlay=document.getElementById("tipOverlay");
   var titleEl=document.getElementById("tipTitle");
   var bodyEl=document.getElementById("tipBody");
+  var cleanName=stripStar(exName);
   
-  titleEl.textContent=exName||"Exercise Tips";
+  titleEl.textContent=cleanName||"Exercise Tips";
   overlay.style.display="flex";
   
   var emoji=GROUP_EMOJI[group]||"💪";
-  var tipLines=TIPS[exName];
+  var tipLines=TIPS[cleanName];
   if(!tipLines||tipLines.length===0){
     tipLines=defaultTip;
   }
