@@ -108,7 +108,10 @@
 </div>
 <div class="sync-footer">
   <div class="sync-info" id="syncInfo"></div>
-  <button class="sync-btn" id="syncBtn" onclick="handleSync()">Save to Sheets</button>
+  <div style="display:flex;gap:8px">
+    <button class="sync-btn" style="border-color:#666;color:#888;background:transparent;padding:9px 12px" onclick="openSheet()">📊</button>
+    <button class="sync-btn" id="syncBtn" onclick="handleSync()">Save to Sheets</button>
+  </div>
 </div>
 <div class="overlay" id="timerOverlay" style="display:none" onclick="cancelTimer()">
   <div class="timer-box" onclick="event.stopPropagation()">
@@ -132,6 +135,7 @@
 </div>
 <script>
 var APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbzxv2Yzr6imw58OS4TxwPzWuMRCGaxFvgPevpt5br8hRw4wkrRLD_nzwcxhRsKUvkeN/exec";
+var SHEET_URL="https://docs.google.com/spreadsheets/d/1CPm5MT_Tw5-zihnLEvH0Yt8YHJrUQAkhj8V2sKK8QmI/edit";
 var STORAGE_KEY="ironLog_v6";
 var HISTORY_KEY="ironLog_hist";
 var MAX_SETS=4;
@@ -590,6 +594,7 @@ function onRemove(el){
 function onRestBtn(el){startTimer(parseInt(el.dataset.secs,10),el.dataset.label,el.dataset.rowid);}
 function onTipBtn(el){openTip(el.dataset.ex,el.dataset.grp);}
 function addRow(){rows.push(emptyRow());persist();renderAll();updateFooter();setTimeout(function(){window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});},50);}
+function openSheet(){window.open(SHEET_URL,"_blank");}
 
 // ── SYNC ───────────────────────────────────────────────────
 function updateFooter(){
@@ -617,12 +622,20 @@ function handleSync(){
   var values=[];
   for(var j=0;j<unsynced.length;j++){
     var u=unsynced[j];
+    // Calculate volume (sum of weight × reps for all sets)
+    var volume=0;
+    for(var v=0;v<u.sets.length;v++){
+      var w=parseFloat(u.sets[v].weight)||0;
+      var r=parseFloat(u.sets[v].reps)||0;
+      volume+=w*r;
+    }
     values.push([
       u.date,u.day,u.group,u.exercise==="__custom__"?u.customExercise:stripStar(u.exercise),
       u.sets[0]?u.sets[0].weight||"":"",u.sets[0]?u.sets[0].reps||"":"",
       u.sets[1]?u.sets[1].weight||"":"",u.sets[1]?u.sets[1].reps||"":"",
       u.sets[2]?u.sets[2].weight||"":"",u.sets[2]?u.sets[2].reps||"":"",
       u.sets[3]?u.sets[3].weight||"":"",u.sets[3]?u.sets[3].reps||"":"",
+      volume||"",
       u.notes||""
     ]);
   }
