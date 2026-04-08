@@ -12,23 +12,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --bg:#0d0d0f; --bg2:#111114; --bg3:#141416;
-      --border:#1e1e24; --border2:#2a2a30;
-      --text:#fff; --text2:#888; --text3:#444;
-      --success:#3DBF7F; --warn:#F5A623; --danger:#E05C5C; --info:#4F8EF7;
-    }
+    :root{--bg:#0d0d0f;--bg2:#111114;--bg3:#141416;--border:#1e1e24;--border2:#2a2a30;--text:#fff;--text2:#888;--text3:#444;--success:#3DBF7F;--warn:#F5A623;--danger:#E05C5C;--info:#4F8EF7}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overscroll-behavior:none}
     select,input,button{font-family:'DM Sans',sans-serif}
     select{appearance:none;-webkit-appearance:none}
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+    input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
     input[type=number]{-moz-appearance:textfield}
     @keyframes spin{to{transform:rotate(360deg)}}
     @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
     @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
     #app{padding-bottom:90px}
     .header{display:flex;justify-content:space-between;align-items:flex-start;padding:20px 16px 8px}
     .logo{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:5px;line-height:1}
@@ -37,145 +30,118 @@
     .date-num{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1}
     .date-mon{font-size:10px;color:var(--text3);letter-spacing:2px;margin-top:1px}
     .day-pill{margin:0 16px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:11px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
-
-    /* CARDS */
-    .row-list{padding:0 12px;display:flex;flex-direction:column;gap:12px}
+    .row-list{padding:0 10px;display:flex;flex-direction:column;gap:12px}
     .card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;animation:fadeIn 0.2s ease}
-    .card-bar{display:flex;align-items:center;gap:8px;padding:9px 12px}
-    .card-index{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-    .card-title{flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px;min-width:0}
+    .card-bar{display:flex;align-items:center;gap:6px;padding:8px 10px}
+    .card-index{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+    .card-title{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:5px;min-width:0}
     .card-title strong{color:var(--text);font-weight:600}
     .card-title .ph{color:var(--text3)}
-    .prog-pill{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700;flex-shrink:0}
-    .tip-btn{background:none;border:1px solid;border-radius:6px;font-size:13px;padding:3px 7px;cursor:pointer;flex-shrink:0}
-    .sync-badge{font-size:10px;color:var(--success);background:#1a3a1a;padding:2px 6px;border-radius:5px;flex-shrink:0}
-    .remove-btn{background:none;border:none;color:#333;cursor:pointer;font-size:16px;padding:2px 6px;flex-shrink:0}
-    .card-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:10px}
-
-    /* FIELDS */
-    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .field-wrap{display:flex;flex-direction:column;gap:4px}
+    .prog-pill{font-size:9px;padding:2px 6px;border-radius:10px;font-weight:700;flex-shrink:0}
+    .tip-btn{background:none;border:1px solid;border-radius:6px;font-size:13px;padding:2px 6px;cursor:pointer;flex-shrink:0}
+    .sync-badge{font-size:9px;color:var(--success);background:#1a3a1a;padding:2px 5px;border-radius:4px;flex-shrink:0}
+    .remove-btn{background:none;border:none;color:#333;cursor:pointer;font-size:15px;padding:2px 4px;flex-shrink:0}
+    .card-body{padding:8px 10px 10px;display:flex;flex-direction:column;gap:9px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .field-wrap{display:flex;flex-direction:column;gap:3px}
     .field-label{font-size:9px;color:var(--text3);letter-spacing:1.5px;font-weight:700;text-transform:uppercase}
     .sel-wrap{position:relative}
-    .sel-wrap select{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:8px 26px 8px 10px;cursor:pointer}
+    .sel-wrap select{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:12px;padding:7px 22px 7px 8px;cursor:pointer}
     .sel-wrap select:disabled{opacity:0.35;cursor:not-allowed}
-    .sel-arrow{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none}
-    .custom-input{margin-top:6px;width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:8px 10px;outline:none}
-
-    /* REST */
-    .rest-row{display:flex;align-items:center;gap:8px}
+    .sel-arrow{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;pointer-events:none}
+    .custom-input{margin-top:5px;width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:12px;padding:7px 8px;outline:none}
+    /* target badge */
+    .target-badge{font-size:10px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 10px;text-align:center}
+    .target-badge span{color:var(--text2)}
+    /* rest */
+    .rest-row{display:flex;align-items:center;gap:7px}
     .rest-btns{display:flex;gap:4px;flex:1}
-    .rest-btn{flex:1;border:1px solid;border-radius:6px;font-size:11px;font-weight:700;padding:7px 0;cursor:pointer;letter-spacing:0.5px}
-
-    /* SETS — mobile-first 2-row layout */
-    .sets-wrap{display:flex;flex-direction:column;gap:8px}
-    .set-block{border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:opacity 0.2s,border-color 0.2s}
-    .set-block.done{opacity:0.45;border-color:var(--border)}
-    .set-top{display:flex;align-items:center;gap:0}
-    .set-num{width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;border-radius:0}
-    .set-inputs{display:flex;flex:1}
-    .set-field{flex:1;display:flex;flex-direction:column;border-left:1px solid var(--border)}
-    .set-field-label{font-size:8px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:3px 8px 0;font-weight:700}
-    .set-input{width:100%;background:transparent;border:none;color:var(--text);font-size:18px;font-weight:600;padding:2px 8px 6px;text-align:center;outline:none}
+    .rest-btn{flex:1;border:1px solid;border-radius:6px;font-size:11px;font-weight:700;padding:6px 0;cursor:pointer;letter-spacing:0.3px}
+    /* sets - compact mobile layout */
+    .sets-wrap{display:flex;flex-direction:column;gap:6px}
+    .set-block{border:1px solid var(--border);border-radius:9px;overflow:hidden;transition:opacity 0.2s}
+    .set-block.done{opacity:0.4}
+    .set-top{display:flex;align-items:stretch}
+    .set-num{width:32px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+    .set-inputs{display:flex;flex:1;min-width:0}
+    .set-field{flex:1;display:flex;flex-direction:column;border-left:1px solid var(--border);min-width:0}
+    .set-field-lbl{font-size:8px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:3px 6px 0;font-weight:700}
+    .set-input{width:100%;background:transparent;border:none;color:var(--text);font-size:17px;font-weight:600;padding:1px 6px 5px;text-align:center;outline:none;min-width:0}
     .set-input.done{text-decoration:line-through;color:var(--text3)}
-    .set-done-row{border-top:1px solid var(--border);display:flex}
-    .done-btn{flex:1;background:none;border:none;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:1px;padding:8px;text-transform:uppercase;transition:all 0.15s}
-
-    .notes-input{background:transparent;border:none;border-top:1px solid var(--border);color:var(--text3);font-size:12px;padding:9px 0 0;outline:none;width:100%}
+    .set-done-strip{border-top:1px solid var(--border);display:flex}
+    .done-btn{flex:1;background:none;border:none;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:0.8px;padding:7px 8px;text-transform:uppercase;transition:background 0.15s,color 0.15s;text-align:center}
+    .notes-input{background:transparent;border:none;border-top:1px solid var(--border);color:var(--text3);font-size:11px;padding:8px 0 0;outline:none;width:100%}
     .notes-input::placeholder{color:#222}
-
-    .add-btn{display:block;width:calc(100% - 24px);margin:14px 12px 0;background:var(--bg2);border:1px dashed var(--border2);border-radius:10px;color:var(--text3);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;padding:14px;cursor:pointer}
-
-    /* FOOTER */
-    .sync-footer{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:12px 16px;z-index:100}
+    .add-btn{display:block;width:calc(100% - 20px);margin:12px 10px 0;background:var(--bg2);border:1px dashed var(--border2);border-radius:10px;color:var(--text3);font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:3px;padding:13px;cursor:pointer}
+    .sync-footer{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;z-index:100}
     .sync-info{font-size:12px}
-    .sync-btn{border:1px solid;border-radius:9px;font-size:12px;font-weight:700;padding:10px 18px;cursor:pointer;letter-spacing:0.5px}
-
-    /* OVERLAYS */
+    .sync-btn{border:1px solid;border-radius:9px;font-size:12px;font-weight:700;padding:9px 16px;cursor:pointer;letter-spacing:0.5px}
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.93);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;animation:fadeIn 0.15s ease}
-
-    /* TIMER */
     .timer-box{background:var(--bg2);border:1px solid var(--border2);border-radius:22px;padding:28px 40px;text-align:center;animation:slideUp 0.2s ease}
-    .timer-top-label{font-size:11px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;max-width:220px}
+    .timer-lbl{font-size:11px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;max-width:220px}
     .timer-sub{font-size:11px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin:10px 0 18px}
     .timer-dismiss{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:10px 26px;border-radius:9px;cursor:pointer;font-size:11px;letter-spacing:2px;font-weight:700}
-
-    /* TIP MODAL */
     .tip-box{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;width:100%;max-width:420px;max-height:88vh;overflow-y:auto;animation:slideUp 0.2s ease}
-    .tip-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:1}
-    .tip-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px}
+    .tip-header{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 10px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:1}
+    .tip-ttl{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px}
     .tip-close{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:2px 6px;line-height:1}
     .tip-loading{display:flex;flex-direction:column;align-items:center;padding:40px}
     .spinner{width:32px;height:32px;border:3px solid var(--border2);border-top:3px solid var(--info);border-radius:50%;animation:spin 0.8s linear infinite}
     .tip-loading p{color:var(--text3);font-size:12px;margin-top:10px}
     .tip-emoji{padding:20px;text-align:center;font-size:48px;background:var(--bg)}
-    .tip-img-wrap{display:flex;justify-content:center;padding:16px 16px 0;background:var(--bg)}
+    .tip-img-wrap{display:flex;justify-content:center;padding:14px 14px 0;background:var(--bg)}
     .tip-img{width:100%;max-width:260px;border-radius:10px}
-    .tip-content{padding:14px 16px 20px;display:flex;flex-direction:column;gap:10px}
-    .tip-line{display:flex;gap:10px;font-size:13px;color:#ccc;line-height:1.6}
-    .tip-bullet{color:var(--info);font-weight:700;flex-shrink:0;font-size:15px;margin-top:1px}
+    .tip-content{padding:12px 14px 18px;display:flex;flex-direction:column;gap:9px}
+    .tip-line{display:flex;gap:8px;font-size:13px;color:#ccc;line-height:1.55}
+    .tip-bullet{color:var(--info);font-weight:700;flex-shrink:0;font-size:14px;margin-top:2px}
   </style>
 </head>
 <body>
 <div id="app">
   <div class="header">
-    <div>
-      <div class="logo">IRON LOG</div>
-      <div class="header-sub">Jeff's 5-Day Plan</div>
-    </div>
-    <div class="date-badge">
-      <div class="date-num" id="dateNum"></div>
-      <div class="date-mon" id="dateMon"></div>
-    </div>
+    <div><div class="logo">IRON LOG</div><div class="header-sub">Jeff's 5-Day Plan</div></div>
+    <div class="date-badge"><div class="date-num" id="dateNum"></div><div class="date-mon" id="dateMon"></div></div>
   </div>
   <div class="day-pill" id="dayPill"></div>
   <div class="row-list" id="rowList"></div>
   <button class="add-btn" onclick="addRow()">+ ADD EXERCISE</button>
 </div>
-
 <div class="sync-footer">
   <div class="sync-info" id="syncInfo"></div>
-  <button class="sync-btn" id="syncBtn" onclick="handleSync()">📤 Save to Sheets</button>
+  <button class="sync-btn" id="syncBtn" onclick="handleSync()">Save to Sheets</button>
 </div>
-
 <div class="overlay" id="timerOverlay" style="display:none" onclick="cancelTimer()">
   <div class="timer-box" onclick="event.stopPropagation()">
-    <div class="timer-top-label" id="timerLabel"></div>
+    <div class="timer-lbl" id="timerLabel"></div>
     <svg width="140" height="140" viewBox="0 0 140 140">
       <circle cx="70" cy="70" r="60" fill="none" stroke="#1e1e24" stroke-width="9"/>
-      <circle id="timerArc" cx="70" cy="70" r="60" fill="none" stroke="#3DBF7F"
-        stroke-width="9" stroke-dasharray="376.99" stroke-dashoffset="0"
-        stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s linear,stroke 0.5s"/>
-      <text x="70" y="78" text-anchor="middle" fill="white" font-size="34"
-        font-family="Bebas Neue" letter-spacing="2" id="timerText">0:00</text>
+      <circle id="timerArc" cx="70" cy="70" r="60" fill="none" stroke="#3DBF7F" stroke-width="9"
+        stroke-dasharray="376.99" stroke-dashoffset="0" stroke-linecap="round"
+        style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s linear,stroke 0.5s"/>
+      <text x="70" y="78" text-anchor="middle" fill="white" font-size="34" font-family="Bebas Neue" letter-spacing="2" id="timerText">0:00</text>
     </svg>
     <div class="timer-sub" id="timerSub">RESTING</div>
     <button class="timer-dismiss" onclick="cancelTimer()">DISMISS</button>
   </div>
 </div>
-
 <div class="overlay" id="tipOverlay" style="display:none" onclick="closeTip()">
   <div class="tip-box" onclick="event.stopPropagation()">
-    <div class="tip-header">
-      <div class="tip-title" id="tipTitle"></div>
-      <button class="tip-close" onclick="closeTip()">✕</button>
-    </div>
+    <div class="tip-header"><div class="tip-ttl" id="tipTitle"></div><button class="tip-close" onclick="closeTip()">x</button></div>
     <div id="tipBody"></div>
   </div>
 </div>
-
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxv2Yzr6imw58OS4TxwPzWuMRCGaxFvgPevpt5br8hRw4wkrRLD_nzwcxhRsKUvkeN/exec";
-const STORAGE_KEY = "ironLog_v4";
-const HISTORY_KEY = "ironLog_history";
-const MAX_SETS = 4;
+const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbzxv2Yzr6imw58OS4TxwPzWuMRCGaxFvgPevpt5br8hRw4wkrRLD_nzwcxhRsKUvkeN/exec";
+const STORAGE_KEY="ironLog_v5";
+const HISTORY_KEY="ironLog_hist";
+const MAX_SETS=4;
 
-const DAY_OPTIONS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-const GROUP_OPTIONS = ["Push","Pull","Legs","Upper Strength","Cardio","Core"];
-const GROUP_COLORS = {Push:"#4F8EF7",Pull:"#E05C5C",Legs:"#F5A623","Upper Strength":"#A855F7",Cardio:"#3DBF7F",Core:"#3DBF7F"};
-const GROUP_EMOJI  = {Push:"💪",Pull:"🏋️",Legs:"🦵","Upper Strength":"⚡",Cardio:"🏃",Core:"🎯"};
+const DAY_OPTIONS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const GROUP_OPTIONS=["Push","Pull","Legs","Upper Strength","Cardio","Core"];
+const GROUP_COLORS={Push:"#4F8EF7",Pull:"#E05C5C",Legs:"#F5A623","Upper Strength":"#A855F7",Cardio:"#3DBF7F",Core:"#3DBF7F"};
+const GROUP_EMOJI={Push:"💪",Pull:"🏋️",Legs:"🦵","Upper Strength":"⚡",Cardio:"🏃",Core:"🎯"};
 
-const EXERCISE_MAP = {
+const EXERCISE_MAP={
   Push:["Chest Press Machine","Incline Dumbbell Press","Shoulder Press Machine","Lateral Raise (Dumbbells)","Tricep Pushdown (Cable)","Overhead Tricep Extension","Cable Fly","Pec Deck"],
   Pull:["Lat Pulldown","Seated Cable Row","Machine Row","Face Pulls (Cable)","Dumbbell Curl","Hammer Curl","Assisted Pull-Up","Cable Curl"],
   Legs:["Leg Press","Romanian Deadlift (Dumbbells)","Leg Curl Machine","Leg Extension Machine","Calf Raise Machine","Hip Abductor Machine","Goblet Squat","Step Up"],
@@ -184,96 +150,136 @@ const EXERCISE_MAP = {
   Core:["Plank","Cable Crunch","Seated Leg Raise","Ab Machine","Russian Twist","Dead Bug"]
 };
 
-// Sensible starting defaults (lbs x reps) — will be overridden by history after first session
-const DEFAULTS = {
-  "Chest Press Machine":[{weight:100,reps:10},{weight:100,reps:10},{weight:100,reps:10},{weight:100,reps:10}],
-  "Incline Dumbbell Press":[{weight:35,reps:10},{weight:35,reps:10},{weight:35,reps:10}],
-  "Shoulder Press Machine":[{weight:80,reps:10},{weight:80,reps:10},{weight:80,reps:10}],
-  "Lateral Raise (Dumbbells)":[{weight:20,reps:12},{weight:20,reps:12},{weight:20,reps:12}],
-  "Tricep Pushdown (Cable)":[{weight:50,reps:12},{weight:50,reps:12},{weight:50,reps:12}],
-  "Overhead Tricep Extension":[{weight:40,reps:12},{weight:40,reps:12},{weight:40,reps:12}],
-  "Cable Fly":[{weight:30,reps:12},{weight:30,reps:12},{weight:30,reps:12}],
-  "Pec Deck":[{weight:80,reps:12},{weight:80,reps:12},{weight:80,reps:12}],
-  "Lat Pulldown":[{weight:110,reps:10},{weight:110,reps:10},{weight:110,reps:10},{weight:110,reps:10}],
-  "Seated Cable Row":[{weight:100,reps:10},{weight:100,reps:10},{weight:100,reps:10}],
-  "Machine Row":[{weight:100,reps:10},{weight:100,reps:10},{weight:100,reps:10}],
-  "Face Pulls (Cable)":[{weight:40,reps:15},{weight:40,reps:15},{weight:40,reps:15}],
-  "Dumbbell Curl":[{weight:30,reps:10},{weight:30,reps:10},{weight:30,reps:10}],
-  "Hammer Curl":[{weight:30,reps:12},{weight:30,reps:12},{weight:30,reps:12}],
-  "Assisted Pull-Up":[{weight:50,reps:8},{weight:50,reps:8},{weight:50,reps:8}],
-  "Cable Curl":[{weight:40,reps:12},{weight:40,reps:12},{weight:40,reps:12}],
-  "Leg Press":[{weight:180,reps:12},{weight:180,reps:12},{weight:180,reps:12},{weight:180,reps:12}],
-  "Romanian Deadlift (Dumbbells)":[{weight:50,reps:10},{weight:50,reps:10},{weight:50,reps:10}],
-  "Leg Curl Machine":[{weight:70,reps:12},{weight:70,reps:12},{weight:70,reps:12}],
-  "Leg Extension Machine":[{weight:80,reps:12},{weight:80,reps:12},{weight:80,reps:12}],
-  "Calf Raise Machine":[{weight:100,reps:15},{weight:100,reps:15},{weight:100,reps:15}],
-  "Hip Abductor Machine":[{weight:80,reps:15},{weight:80,reps:15}],
-  "Goblet Squat":[{weight:40,reps:12},{weight:40,reps:12},{weight:40,reps:12}],
-  "Step Up":[{weight:30,reps:12},{weight:30,reps:12},{weight:30,reps:12}],
-  "Chest Press Machine (heavy)":[{weight:120,reps:6},{weight:120,reps:6},{weight:120,reps:6},{weight:120,reps:6}],
-  "Lat Pulldown (heavy)":[{weight:130,reps:6},{weight:130,reps:6},{weight:130,reps:6},{weight:130,reps:6}],
-  "Shoulder Press Machine (heavy)":[{weight:100,reps:6},{weight:100,reps:6},{weight:100,reps:6}],
-  "Machine Row (heavy)":[{weight:120,reps:6},{weight:120,reps:6},{weight:120,reps:6}],
-  "Tricep Pushdown":[{weight:55,reps:8},{weight:55,reps:8}],
-  "Overhead Press":[{weight:80,reps:8},{weight:80,reps:8},{weight:80,reps:8}],
-  "Barbell Row":[{weight:95,reps:8},{weight:95,reps:8},{weight:95,reps:8}],
-  "Incline Treadmill Walk":[{weight:0,reps:35}],
-  "Plank":[{weight:0,reps:45},{weight:0,reps:45},{weight:0,reps:45}],
-  "Cable Crunch":[{weight:50,reps:15},{weight:50,reps:15},{weight:50,reps:15}],
-  "Seated Leg Raise":[{weight:0,reps:15},{weight:0,reps:15},{weight:0,reps:15}],
-  "Ab Machine":[{weight:60,reps:15},{weight:60,reps:15},{weight:60,reps:15}],
-  "Russian Twist":[{weight:15,reps:20},{weight:15,reps:20},{weight:15,reps:20}],
-  "Dead Bug":[{weight:0,reps:10},{weight:0,reps:10},{weight:0,reps:10}]
+// Target sets x reps for each exercise
+const TARGETS={
+  "Chest Press Machine":"4 sets x 8-10 reps",
+  "Incline Dumbbell Press":"3 sets x 10-12 reps",
+  "Shoulder Press Machine":"3 sets x 8-10 reps",
+  "Lateral Raise (Dumbbells)":"3 sets x 12-15 reps",
+  "Tricep Pushdown (Cable)":"3 sets x 10-12 reps",
+  "Overhead Tricep Extension":"3 sets x 12-15 reps",
+  "Cable Fly":"3 sets x 12-15 reps",
+  "Pec Deck":"3 sets x 12-15 reps",
+  "Lat Pulldown":"4 sets x 8-10 reps",
+  "Seated Cable Row":"3 sets x 10-12 reps",
+  "Machine Row":"3 sets x 8-10 reps",
+  "Face Pulls (Cable)":"3 sets x 15 reps",
+  "Dumbbell Curl":"3 sets x 10-12 reps",
+  "Hammer Curl":"3 sets x 12-15 reps",
+  "Assisted Pull-Up":"3 sets x 8 reps",
+  "Cable Curl":"3 sets x 12-15 reps",
+  "Leg Press":"4 sets x 10-12 reps",
+  "Romanian Deadlift (Dumbbells)":"3 sets x 10-12 reps",
+  "Leg Curl Machine":"3 sets x 10-12 reps",
+  "Leg Extension Machine":"3 sets x 12-15 reps",
+  "Calf Raise Machine":"3 sets x 15-20 reps",
+  "Hip Abductor Machine":"2 sets x 15 reps",
+  "Goblet Squat":"3 sets x 12 reps",
+  "Step Up":"3 sets x 12 reps",
+  "Chest Press Machine (heavy)":"4 sets x 5-6 reps",
+  "Lat Pulldown (heavy)":"4 sets x 5-6 reps",
+  "Shoulder Press Machine (heavy)":"3 sets x 6-8 reps",
+  "Machine Row (heavy)":"3 sets x 6-8 reps",
+  "Tricep Pushdown":"2 sets x 8 reps",
+  "Overhead Press":"3 sets x 8 reps",
+  "Barbell Row":"3 sets x 8 reps",
+  "Incline Treadmill Walk":"35 min — 8-12% incline, 3.5-4 mph",
+  "Plank":"3 sets x 45-60 sec",
+  "Cable Crunch":"3 sets x 15 reps",
+  "Seated Leg Raise":"3 sets x 15 reps",
+  "Ab Machine":"3 sets x 15 reps",
+  "Russian Twist":"3 sets x 20 reps",
+  "Dead Bug":"3 sets x 10 reps"
 };
 
-// Built-in technique tips — no API call needed, always works
-const TIPS = {
-  "Chest Press Machine":"• Sit tall with your lower back pressed into the pad. Grip handles at mid-chest height — not too high or you stress the shoulder joint.\n• Push straight out and slightly together, exhaling on the push. Squeeze the chest at full extension for 1 second before returning.\n• Avoid letting elbows flare wide past 45°. This is the most common cause of shoulder impingement, especially after 50.\n• Control the return slowly (2-3 seconds). Resist the weight on the way back — this is where you build the most muscle safely.",
-  "Incline Dumbbell Press":"• Set the bench at 30-45°. Lie back so your eyes are under the dumbbells, feet flat on the floor for stability.\n• Lower dumbbells to the upper chest with elbows at about 60° from your torso — not flared out to 90°.\n• Press up and slightly inward, bringing the dumbbells close at the top without clashing them together.\n• For joint protection, never lower past the point where your elbows go below the bench. Stop at chest level.",
-  "Shoulder Press Machine":"• Adjust the seat so handles are at upper-chest height, not above your head. Starting too high compresses the shoulder.\n• Press straight up, keeping your core braced and lower back neutral against the pad.\n• Stop just short of locking out at the top — this keeps tension on the muscle and reduces joint stress.\n• On the way down, control the weight and stop when your elbows are at 90°. Going lower adds rotator cuff strain.",
-  "Lateral Raise (Dumbbells)":"• Stand with a slight bend in elbows, palms facing down. Lean very slightly forward from the hips — this improves shoulder mechanics.\n• Raise to shoulder height only — no higher. Lifting past parallel puts unnecessary strain on the AC joint.\n• Lead with your elbows, not your wrists. Imagine pouring a glass of water at the top — slight thumb-down rotation.\n• Use lighter weight and strict form. Cheating with momentum here is the #1 cause of shoulder injury in this movement.",
-  "Tricep Pushdown (Cable)":"• Set the cable high. Stand close, elbows pinned to your sides at about 90°. Keep elbows stationary throughout.\n• Push straight down until arms are fully extended, squeezing the tricep hard at the bottom.\n• Control the return — let the cable pull your hands only up to 90°, not higher, to keep tension on the triceps.\n• Avoid leaning too far forward or using your body weight. Keep your chest up and core braced.",
-  "Overhead Tricep Extension":"• Stand or sit with the cable behind you. Keep your elbows pointing forward and close to your head throughout.\n• Extend fully overhead, then return slowly. The key is keeping upper arms vertical and still — only the forearm moves.\n• Men over 50 should be cautious if there is any elbow discomfort. Switch to a rope attachment for a more natural arc.\n• Use a moderate weight. This is a stretch-position exercise — the tricep is most vulnerable to strain when fully stretched.",
-  "Lat Pulldown":"• Grip slightly wider than shoulder-width. Lean back just 10-15° and keep your chest tall — don't round forward.\n• Pull to your upper chest, driving your elbows down and back. Think of putting your elbows into your back pockets.\n• Avoid pulling behind the neck — this is hard on the cervical spine and offers no advantage.\n• Control the return fully. Let your arms extend and your lats stretch at the top before the next rep.",
-  "Seated Cable Row":"• Sit tall with a slight natural arch in the lower back. Keep your chest up throughout — don't round when reaching forward.\n• Pull the handle to your lower sternum, squeezing your shoulder blades together at the end. Pause 1 second.\n• Avoid rocking back and forth. All movement should be in the arms and shoulders — the torso stays still.\n• The forward reach (stretch) is important — let your shoulder blades protract fully before each pull.",
-  "Machine Row":"• Adjust the chest pad so you can sit tall without hunching. Grip at shoulder width, neutral grip preferred.\n• Drive elbows straight back, squeezing the mid-back at full contraction. Hold for 1 second.\n• Avoid shrugging your shoulders up during the pull. Keep them down and back throughout.\n• Ideal for men over 50 because the chest pad removes lower back stress — a key advantage over free-weight rows.",
-  "Face Pulls (Cable)":"• Set the cable at upper-face height. Use a rope attachment, palms facing in. Step back far enough to load the cable.\n• Pull the rope to your face, separating your hands and flaring elbows high and wide. Think of a double-bicep pose.\n• This exercise protects the rotator cuff — essential for men over 50. Never rush it or use heavy weight.\n• 15+ reps with controlled form is better than heavy weight here. It's a corrective exercise, not a strength move.",
-  "Dumbbell Curl":"• Stand with dumbbells at your sides, palms forward. Pin your elbows to your sides — they should not move forward.\n• Curl up to shoulder height, rotating your wrists slightly outward at the top for a full bicep peak contraction.\n• Avoid swinging your body. If you're leaning back, the weight is too heavy. Go lighter with strict form.\n• Lower slowly — 2-3 seconds down. Most muscle damage (and growth) happens on the lowering phase.",
-  "Hammer Curl":"• Hold dumbbells with a neutral grip (palms facing each other). This works the brachialis and forearm along with the bicep.\n• Curl straight up, keeping the neutral grip throughout — don't rotate the wrist. Elbows stay pinned to your sides.\n• Hammer curls are easier on the wrist and elbow than supinated curls — good choice if you have any elbow tenderness.\n• Can be done alternating or simultaneously. Alternating allows better focus on each arm.",
-  "Leg Press":"• Position feet shoulder-width apart, mid-platform. Toes slightly out. Your knees should track over your toes throughout.\n• Lower only until your knees are at 90° — going deeper strains the knee joint, especially with an old injury.\n• Never lock out your knees at the top. Keep a slight bend to protect the joint and maintain muscle tension.\n• Avoid letting your lower back round off the pad at the bottom. If it does, your range is too deep.",
-  "Romanian Deadlift (Dumbbells)":"• Hold dumbbells in front of your thighs. Feet hip-width apart. Keep a soft bend in the knees throughout.\n• Hinge at the hips — push them back as you lower the dumbbells along your shins. Keep your back flat, not rounded.\n• Lower until you feel a strong hamstring stretch, usually mid-shin. Stop there — going lower rounds the lower back.\n• Drive the hips forward to come up, squeezing the glutes at the top. Think hip hinge, not a squat.",
-  "Leg Curl Machine":"• Adjust the pad to sit just above your heels. Lie face down with knees just off the edge of the bench.\n• Curl the weight up as far as possible, squeezing the hamstrings hard at the top. Pause briefly.\n• Control the return — don't let it snap back. A slow 2-second lowering phase is critical for hamstring development.\n• Avoid lifting your hips off the pad on the way up — this means the weight is too heavy.",
-  "Leg Extension Machine":"• Adjust the pad to rest on your lower shins, just above the ankle. Sit with your back fully against the pad.\n• Extend to full lockout and squeeze the quad hard for 1 second. Full extension is key for VMO activation.\n• Note: if you have knee pain during this movement, reduce range of motion and consult your doctor. Some knee conditions contraindicate this exercise.\n• Lower slowly — 2-3 seconds. The slow lowering phase is where the quad does the most work.",
-  "Calf Raise Machine":"• Stand with the balls of your feet on the platform, shoulders under the pads. Keep a slight bend in the knees.\n• Lower your heels as far as possible to get a full stretch at the bottom — this is key for calf development.\n• Rise up as high as possible onto your toes and squeeze hard at the top for 1-2 seconds.\n• Calves respond well to higher reps (15-20). Control the movement — no bouncing at the bottom.",
-  "Hip Abductor Machine":"• Sit with your back flat against the pad. Adjust so your knees and hips are at 90°.\n• Push your knees out against the pads in a controlled motion, squeezing the outer glutes at full range.\n• Avoid tilting to one side or using momentum. This is a controlled, isolating movement.\n• This exercise protects the knee — strengthening the hip abductors reduces knee valgus (caving in) during other exercises.",
-  "Plank":"• Start on elbows and toes, body in a straight line from head to heels. No sagging hips or raised butt.\n• Brace your core as if you're about to take a punch. Squeeze glutes. Breathe normally — don't hold your breath.\n• If your lower back hurts, drop to your knees. Build duration gradually: 20s → 30s → 45s → 60s over weeks.\n• Avoid looking up — keep your neck neutral, eyes toward the floor. Cervical alignment matters.",
-  "Cable Crunch":"• Kneel facing the cable, rope at the back of your neck. Keep your hips stationary throughout.\n• Crunch down by rounding your upper back — your hips should not move. The movement is all in the abs.\n• Squeeze hard at the bottom, then return slowly. Avoid using your hip flexors to do the work.\n• Keep the weight moderate. This is about contraction quality, not maximum load.",
-  "Seated Leg Raise":"• Sit on the edge of a bench, hands gripping the sides. Lean back slightly and extend legs out straight.\n• Raise your legs to hip height while contracting your lower abs. Don't swing — use a slow, controlled lift.\n• If this is too difficult, bend your knees slightly. Work toward full extension over time.\n• Avoid holding your breath. Exhale as you raise, inhale as you lower.",
-  "Incline Treadmill Walk":"• Set incline to 8-12% and speed to 3.0-4.0 mph. Hold the handrails only for balance, not to support your weight.\n• Walk with a natural gait, landing mid-foot. Keep your posture tall — avoid leaning into the machine.\n• This is one of the best fat-burning, joint-friendly cardio options. It elevates heart rate without impact stress on knees.\n• Target heart rate zone: 60-70% of max (roughly 220 minus your age). For you, around 120-130 bpm.",
-  "Chest Press Machine (heavy)":"• Same setup as regular chest press. On heavy days, warm up with 2 light sets before your working sets.\n• Use a 3-second lowering phase. Heavy weights with slow negatives trigger maximum muscle fiber recruitment.\n• Have a spotter or keep the safety catches set — machines are safer than free weights but weight still matters.\n• On heavy days, keep reps at 5-6. If you hit 6 clean reps, add 5 lbs next session — that's progressive overload.",
-  "Lat Pulldown (heavy)":"• Same mechanics as regular lat pulldown. On heavy days the key is maintaining form — no excessive lean-back.\n• Use lifting straps if your grip gives out before your lats. Grip should never be the limiting factor.\n• 5-6 reps heavy is ideal. Rest 2-3 minutes between sets on heavy days — full recovery between sets is critical.\n• If you feel it in your biceps more than your lats, try a wider grip and focus on driving your elbows down.",
-  "Shoulder Press Machine (heavy)":"• Warm up with 2 lighter sets. On heavy sets, the range of motion can be slightly shorter — stop just below ear height on descent.\n• Keep your core extra braced on heavy presses. Without it, heavy overhead work compresses the lumbar spine.\n• 6-8 reps here. Heavy shoulder pressing should be done early in the session when you're freshest.\n• If you feel any shoulder clicking or pinching, stop and reduce weight. Pain with overhead pressing needs medical attention.",
-  "Machine Row (heavy)":"• On heavy row days, set the chest pad firm against your chest for maximum back isolation.\n• Drive the weight back explosively, then lower under full control for 3 seconds. This is the ideal power-endurance pattern.\n• 6-8 reps. Heavy rows build the thick mid-back that protects your spine — one of the most important exercises for men over 50.\n• Focus on driving elbows back, not pulling with your biceps. Think of your hands as hooks, not the drivers.",
-  "Tricep Pushdown":"• Same mechanics as Tricep Pushdown (Cable). On strength days, go slightly heavier with 8 reps.\n• Keep strict form — no elbow drift. As weight increases the temptation to let elbows flare grows. Don't let it.\n• A V-bar attachment allows slightly more weight than a straight bar. Rope allows a wider range of motion.\n• Finish with a full squeeze at the bottom on every rep — this is what builds the tricep horseshoe shape.",
-  "Overhead Press":"• Stand with feet shoulder-width apart. Hold the bar at shoulder height, grip just outside shoulder-width.\n• Press straight up, slightly behind the crown of your head at the top. Keep your core braced and glutes squeezed.\n• Avoid pressing in front of your face — this puts the bar path forward of your center of gravity and strains the shoulder.\n• Lower to chin height, not below. For men over 50, full depth overhead pressing can stress the shoulder capsule.",
-  "Barbell Row":"• Hinge forward 45° with a flat back, bar hanging below your chest. Grip slightly wider than shoulder-width.\n• Pull the bar to your lower sternum, driving elbows back and squeezing the mid-back at the top.\n• Keep the lower back flat throughout. If you feel lower back strain, reduce weight or switch to machine row.\n• Control the lowering phase fully. Letting the bar drop with gravity eliminates the eccentric contraction.",
-  "Goblet Squat":"• Hold a dumbbell vertically at your chest. Feet shoulder-width, toes out 30°. Keep the weight close to your body.\n• Sit back and down between your knees — elbows track inside the knees at the bottom. Chest stays tall.\n• This is a knee-friendly squat variation — the goblet position keeps your torso upright, reducing knee stress.\n• Go only as deep as your mobility and knee comfort allow. A parallel or slightly above parallel squat is fine.",
-  "Step Up":"• Use a box or bench at a height where your knee is at 90° when your foot is on top.\n• Drive through the heel of the elevated foot to stand up. Avoid pushing off the back foot — it defeats the purpose.\n• Step up slowly and with control. This unilateral movement is excellent for balance and hip stability.\n• Start with bodyweight only. Add dumbbells once form is solid. With your knee history, keep the step height moderate.",
-  "Ab Machine":"• Adjust the seat so the pads rest on your upper chest/shoulders. Keep your lower back pressed against the seat.\n• Crunch forward by rounding the upper back, not by pulling with your neck or hip flexors.\n• Squeeze at the full contraction and hold for 1 second. Return slowly with control.\n• Keep weight moderate and reps high (15+). Heavy ab work can contribute to lower back issues over time.",
-  "Russian Twist":"• Sit on the floor with knees bent, feet can be elevated for more difficulty. Lean back 45° and hold a weight.\n• Rotate side to side from the torso, touching the weight to the ground on each side. Keep your chest up.\n• Avoid pulling with your arms — the rotation comes from your obliques. Breathe out on each twist.\n• If you have lower back issues, keep feet on the floor and reduce rotation range. Protect the lumbar spine.",
-  "Dead Bug":"• Lie on your back, arms extended up to the ceiling, knees bent at 90° in the air (tabletop position).\n• Slowly lower your right arm overhead and extend your left leg simultaneously — keep lower back pressed to the floor.\n• This is the most important cue: your lower back must stay flat. If it arches, you have gone too far.\n• Return and alternate sides. This is a core stability exercise, not a strength move. Slow and controlled is everything.",
-  "Treadmill Run":"• Warm up with a 3-min walk before running. Keep an upright posture — don't lean into the machine.\n• Land with your foot under your body, not out in front. Overstriding increases injury risk significantly.\n• For men over 50, interval walking/running (1 min run, 2 min walk) is easier on joints than sustained running.\n• Wear proper running shoes. Treadmill running is lower impact than road running, but footwear still matters.",
-  "Elliptical":"• Keep resistance high enough that you're working — the elliptical is often used too easy to be effective.\n• Keep your weight balanced through your feet, not leaning on the handles. Use the handles for upper body engagement.\n• Maintain an upright posture. Hunching over the handles reduces calorie burn and puts stress on the lower back.\n• 20-30 minutes at moderate intensity is effective. Use the incline feature to increase glute and hamstring engagement.",
-  "Stationary Bike":"• Adjust seat height so your knee has a slight bend at the bottom of the pedal stroke — not fully extended.\n• Maintain an upright or slightly forward torso. Avoid slouching — it strains the lower back over time.\n• Keep a smooth, circular pedal stroke. Pushing and pulling through the full revolution is more efficient.\n• Excellent low-impact cardio for men with knee issues. Can be used for both steady-state and interval training.",
-  "Row Machine":"• Start with shins vertical, arms extended, back straight — not rounded. This is the catch position.\n• Drive with your legs first, then lean back slightly, then pull the handle to your lower chest. Sequence matters.\n• The legs do 60% of the work. Men who pull mostly with their arms are leaving power and cardio benefit on the table.\n• Return by extending arms first, then hinge forward, then bend knees. The reverse of the drive sequence.",
-  "Stair Climber":"• Stand tall on the machine — avoid leaning heavily on the handrails or hunching. Light touch for balance only.\n• Take full steps, pressing through the whole foot. Mini-stepping at a fast pace is less effective and harder on the knees.\n• This machine has a high calorie burn for its intensity level. 20-25 minutes is a solid session.\n• Keep the speed moderate. A pace where you can speak in short sentences is the right aerobic intensity zone.",
-  "Assisted Pull-Up":"• Adjust the weight assistance so the movement is challenging at 8 reps — not so easy it feels effortless.\n• Grip slightly wider than shoulder-width. Start from a full hang, arms extended, shoulders slightly elevated.\n• Pull until your chin clears the bar, driving your elbows down and back. Same cue as the lat pulldown.\n• The goal over time is to reduce the assistance weight progressively — until you can do bodyweight pull-ups.",
-  "Cable Curl":"• Stand facing the cable with a straight bar or EZ bar attachment at the lowest setting.\n• Pin your elbows at your sides and curl up to shoulder height. The cable provides constant tension throughout.\n• The key advantage of cable curls over dumbbells is tension at the bottom of the movement — don't rush through it.\n• Supinate (rotate) your wrists slightly outward at the top for maximum bicep peak contraction.",
-  "Pec Deck":"• Adjust the seat so your elbows are at shoulder height when on the pads. Arms should form a 90° angle.\n• Bring the pads together in a smooth arc, squeezing your chest hard at full contraction. Hold 1 second.\n• On the return, let the pads go back only as far as your chest opens comfortably — don't force the stretch too deep.\n• Excellent for men over 50 because the machine controls the path — reducing the shoulder instability of dumbbell flyes."
+// Starting default weights/reps (overridden by saved history after first session)
+const DEFAULTS={
+  "Chest Press Machine":[100,100,100,100],[100,100,100,100],
+  "Incline Dumbbell Press":[35,35,35],
+  "Shoulder Press Machine":[80,80,80],
+  "Lateral Raise (Dumbbells)":[20,20,20],
+  "Tricep Pushdown (Cable)":[50,50,50],
+  "Overhead Tricep Extension":[40,40,40],
+  "Cable Fly":[30,30,30],
+  "Pec Deck":[80,80,80],
+  "Lat Pulldown":[110,110,110,110],
+  "Seated Cable Row":[100,100,100],
+  "Machine Row":[100,100,100],
+  "Face Pulls (Cable)":[40,40,40],
+  "Dumbbell Curl":[30,30,30],
+  "Hammer Curl":[30,30,30],
+  "Assisted Pull-Up":[50,50,50],
+  "Cable Curl":[40,40,40],
+  "Leg Press":[180,180,180,180],
+  "Romanian Deadlift (Dumbbells)":[50,50,50],
+  "Leg Curl Machine":[70,70,70],
+  "Leg Extension Machine":[80,80,80],
+  "Calf Raise Machine":[100,100,100],
+  "Hip Abductor Machine":[80,80],
+  "Goblet Squat":[40,40,40],
+  "Step Up":[30,30,30],
+  "Chest Press Machine (heavy)":[120,120,120,120],
+  "Lat Pulldown (heavy)":[130,130,130,130],
+  "Shoulder Press Machine (heavy)":[100,100,100],
+  "Machine Row (heavy)":[120,120,120],
+  "Dumbbell Curl":[30,30],
+  "Tricep Pushdown":[55,55],
+  "Overhead Press":[80,80,80],
+  "Barbell Row":[95,95,95],
+  "Incline Treadmill Walk":[0],
+  "Plank":[0,0,0],
+  "Cable Crunch":[50,50,50],
+  "Seated Leg Raise":[0,0,0],
+  "Ab Machine":[60,60,60],
+  "Russian Twist":[15,15,15],
+  "Dead Bug":[0,0,0]
 };
 
-// ExerciseDB GIF IDs (free endpoint)
-const GIF_IDS = {
+// Default reps per exercise
+const DEFAULT_REPS={
+  "Chest Press Machine":[10,10,10,10],
+  "Incline Dumbbell Press":[10,10,10],
+  "Shoulder Press Machine":[10,10,10],
+  "Lateral Raise (Dumbbells)":[12,12,12],
+  "Tricep Pushdown (Cable)":[12,12,12],
+  "Overhead Tricep Extension":[12,12,12],
+  "Cable Fly":[12,12,12],
+  "Pec Deck":[12,12,12],
+  "Lat Pulldown":[10,10,10,10],
+  "Seated Cable Row":[10,10,10],
+  "Machine Row":[10,10,10],
+  "Face Pulls (Cable)":[15,15,15],
+  "Dumbbell Curl":[10,10,10],
+  "Hammer Curl":[12,12,12],
+  "Assisted Pull-Up":[8,8,8],
+  "Cable Curl":[12,12,12],
+  "Leg Press":[12,12,12,12],
+  "Romanian Deadlift (Dumbbells)":[10,10,10],
+  "Leg Curl Machine":[12,12,12],
+  "Leg Extension Machine":[12,12,12],
+  "Calf Raise Machine":[15,15,15],
+  "Hip Abductor Machine":[15,15],
+  "Goblet Squat":[12,12,12],
+  "Step Up":[12,12,12],
+  "Chest Press Machine (heavy)":[6,6,6,6],
+  "Lat Pulldown (heavy)":[6,6,6,6],
+  "Shoulder Press Machine (heavy)":[6,6,6],
+  "Machine Row (heavy)":[6,6,6],
+  "Dumbbell Curl":[8,8],
+  "Tricep Pushdown":[8,8],
+  "Overhead Press":[8,8,8],
+  "Barbell Row":[8,8,8],
+  "Incline Treadmill Walk":[35],
+  "Plank":[45,45,45],
+  "Cable Crunch":[15,15,15],
+  "Seated Leg Raise":[15,15,15],
+  "Ab Machine":[15,15,15],
+  "Russian Twist":[20,20,20],
+  "Dead Bug":[10,10,10]
+};
+
+// GIF IDs for ExerciseDB
+const GIF_IDS={
   "Chest Press Machine":"0009","Incline Dumbbell Press":"0011","Shoulder Press Machine":"0526",
   "Lateral Raise (Dumbbells)":"0034","Tricep Pushdown (Cable)":"0065","Overhead Tricep Extension":"0066",
   "Lat Pulldown":"0030","Seated Cable Row":"0383","Machine Row":"0355","Face Pulls (Cable)":"0332",
@@ -283,38 +289,82 @@ const GIF_IDS = {
   "Lat Pulldown (heavy)":"0030","Tricep Pushdown":"0065","Overhead Press":"0052","Barbell Row":"0025"
 };
 
+// Built-in technique tips stored as arrays of strings to avoid any quoting issues
+const TIPS={};
+TIPS["Chest Press Machine"]=["Sit tall with lower back against the pad. Set grip at mid-chest height — not too high or you stress the shoulder joint.","Push straight out and slightly together, exhaling on the push. Squeeze the chest at full extension for 1 second.","Avoid letting elbows flare wide past 45 degrees. This is the most common cause of shoulder impingement after 50.","Control the return slowly over 2-3 seconds. Resisting the weight on the way back is where you build the most muscle."];
+TIPS["Incline Dumbbell Press"]=["Set bench at 30-45 degrees. Lie back so your eyes are under the dumbbells, feet flat on the floor.","Lower dumbbells to the upper chest with elbows at about 60 degrees from your torso — not flared out to 90.","Press up and slightly inward, bringing dumbbells close at the top without clashing them together.","Never lower past the point where elbows go below the bench. Stop at chest level to protect the shoulder."];
+TIPS["Shoulder Press Machine"]=["Adjust seat so handles are at upper-chest height, not above your head. Starting too high compresses the shoulder.","Press straight up, keeping core braced and lower back neutral against the pad.","Stop just short of locking out at the top — this keeps tension on the muscle and reduces joint stress.","Control the descent and stop when elbows are at 90 degrees. Going lower adds rotator cuff strain."];
+TIPS["Lateral Raise (Dumbbells)"]=["Stand with a slight bend in elbows, palms facing down. Lean very slightly forward from the hips.","Raise to shoulder height only — no higher. Lifting past parallel puts unnecessary strain on the AC joint.","Lead with your elbows, not your wrists. Think of pouring a glass of water at the top — slight thumb-down rotation.","Use lighter weight with strict form. Cheating with momentum here is the number one cause of shoulder injury in this movement."];
+TIPS["Tricep Pushdown (Cable)"]=["Set cable high. Stand close, elbows pinned to your sides at about 90 degrees. Keep elbows stationary throughout.","Push straight down until arms are fully extended, squeezing the tricep hard at the bottom.","Control the return — let the cable pull hands only up to 90 degrees, not higher, to keep tension on the triceps.","Avoid leaning too far forward or using body weight. Keep chest up and core braced throughout."];
+TIPS["Overhead Tricep Extension"]=["Keep elbows pointing forward and close to your head throughout — only the forearm moves.","Extend fully, then return slowly. Upper arms stay vertical and still — this is the key cue.","Men over 50 should be cautious if there is any elbow discomfort. Try a rope attachment for a more natural arc.","Use moderate weight. This is a stretch-position exercise — the tricep is most vulnerable to strain when fully stretched."];
+TIPS["Lat Pulldown"]=["Grip slightly wider than shoulder-width. Lean back just 10-15 degrees and keep your chest tall.","Pull to your upper chest, driving your elbows down and back. Think of putting your elbows into your back pockets.","Avoid pulling behind the neck — this is hard on the cervical spine and offers no advantage.","Control the return fully. Let arms extend and lats stretch at the top before the next rep."];
+TIPS["Lat Pulldown (heavy)"]=["Same mechanics as regular lat pulldown. On heavy days the key is maintaining form — no excessive lean-back.","Use lifting straps if grip gives out before your lats. Grip should never be the limiting factor.","5-6 reps heavy is ideal. Rest 2-3 minutes between sets — full recovery between sets is critical.","If you feel it in your biceps more than your lats, try a wider grip and focus on driving elbows down."];
+TIPS["Seated Cable Row"]=["Sit tall with a slight natural arch in the lower back. Keep chest up — do not round when reaching forward.","Pull the handle to your lower sternum, squeezing shoulder blades together at the end. Pause 1 second.","Avoid rocking back and forth. All movement should be in the arms and shoulders — the torso stays still.","The forward reach is important — let shoulder blades protract fully before each pull."];
+TIPS["Machine Row"]=["Adjust the chest pad so you can sit tall without hunching. Grip at shoulder width.","Drive elbows straight back, squeezing the mid-back at full contraction. Hold for 1 second.","Avoid shrugging your shoulders up during the pull. Keep them down and back throughout.","Ideal for men over 50 because the chest pad removes lower back stress — a key advantage over free-weight rows."];
+TIPS["Machine Row (heavy)"]=["On heavy row days, set the chest pad firm against your chest for maximum back isolation.","Drive the weight back explosively, then lower under full control for 3 seconds.","6-8 reps. Heavy rows build the thick mid-back that protects your spine — one of the most important exercises over 50.","Focus on driving elbows back, not pulling with your biceps. Think of your hands as hooks."];
+TIPS["Face Pulls (Cable)"]=["Set cable at upper-face height. Use a rope attachment, palms facing in. Step back far enough to load the cable.","Pull the rope to your face, separating your hands and flaring elbows high and wide — think double-bicep pose.","This exercise protects the rotator cuff — essential for men over 50. Never rush it or use heavy weight.","15+ reps with controlled form beats heavy weight here. It is a corrective exercise, not a strength move."];
+TIPS["Dumbbell Curl"]=["Stand with dumbbells at sides, palms forward. Pin elbows to your sides — they should not move forward.","Curl up to shoulder height, rotating wrists slightly outward at the top for a full bicep peak contraction.","Avoid swinging your body. If leaning back, the weight is too heavy. Go lighter with strict form.","Lower slowly over 2-3 seconds. Most muscle growth happens on the lowering phase."];
+TIPS["Hammer Curl"]=["Hold dumbbells with a neutral grip, palms facing each other. This also works the brachialis and forearm.","Curl straight up keeping the neutral grip throughout — do not rotate the wrist. Elbows stay pinned to your sides.","Hammer curls are easier on the wrist and elbow than supinated curls — good choice if you have any elbow tenderness.","Can be done alternating or simultaneously. Alternating allows better focus on each arm."];
+TIPS["Leg Press"]=["Position feet shoulder-width apart, mid-platform. Toes slightly out. Knees should track over toes throughout.","Lower only until knees are at 90 degrees — going deeper strains the knee joint, especially with an old injury.","Never lock out your knees at the top. Keep a slight bend to protect the joint and maintain muscle tension.","If your lower back rounds off the pad at the bottom, your range is too deep — stop higher."];
+TIPS["Romanian Deadlift (Dumbbells)"]=["Hold dumbbells in front of thighs, feet hip-width apart. Keep a soft bend in the knees throughout.","Hinge at the hips — push them back as you lower the dumbbells along your shins. Keep your back flat, not rounded.","Lower until you feel a strong hamstring stretch, usually mid-shin. Stop there — going lower rounds the lower back.","Drive hips forward to come up, squeezing the glutes at the top. Think hip hinge, not a squat."];
+TIPS["Leg Curl Machine"]=["Adjust the pad to sit just above your heels. Lie face down with knees just off the edge of the bench.","Curl the weight up as far as possible, squeezing the hamstrings hard at the top. Pause briefly.","Control the return — do not let it snap back. A slow 2-second lowering phase is critical for hamstring development.","Avoid lifting your hips off the pad on the way up — this means the weight is too heavy."];
+TIPS["Leg Extension Machine"]=["Adjust the pad to rest on your lower shins, just above the ankle. Sit with back fully against the pad.","Extend to full lockout and squeeze the quad hard for 1 second. Full extension is key for VMO activation.","If you have knee pain during this movement, reduce range of motion. Some knee conditions may contraindicate this exercise.","Lower slowly over 2-3 seconds. The slow lowering phase is where the quad does the most work."];
+TIPS["Calf Raise Machine"]=["Stand with balls of your feet on the platform, shoulders under the pads. Keep a slight bend in the knees.","Lower heels as far as possible to get a full stretch at the bottom — this is key for calf development.","Rise up as high as possible onto your toes and squeeze hard at the top for 1-2 seconds.","Calves respond well to higher reps at 15-20. Control the movement — no bouncing at the bottom."];
+TIPS["Hip Abductor Machine"]=["Sit with back flat against the pad. Adjust so knees and hips are at 90 degrees.","Push knees out against the pads in a controlled motion, squeezing outer glutes at full range.","Avoid tilting to one side or using momentum. This is a controlled, isolating movement.","Strengthening hip abductors reduces knee valgus (caving in) during squats and other exercises — great for knee health."];
+TIPS["Plank"]=["Start on elbows and toes, body in a straight line from head to heels. No sagging hips or raised butt.","Brace your core as if about to take a punch. Squeeze glutes. Breathe normally — do not hold your breath.","If your lower back hurts, drop to your knees. Build duration gradually: 20s, 30s, 45s, 60s over weeks.","Keep your neck neutral, eyes toward the floor. Cervical alignment matters."];
+TIPS["Cable Crunch"]=["Kneel facing the cable, rope at the back of your neck. Keep hips stationary throughout.","Crunch down by rounding the upper back — hips should not move. The movement is all in the abs.","Squeeze hard at the bottom, then return slowly. Avoid using hip flexors to do the work.","Keep weight moderate. This is about contraction quality, not maximum load."];
+TIPS["Seated Leg Raise"]=["Sit on the edge of a bench, hands gripping the sides. Lean back slightly and extend legs out straight.","Raise legs to hip height while contracting lower abs. Do not swing — use a slow, controlled lift.","If this is too difficult, bend your knees slightly. Work toward full extension over time.","Exhale as you raise, inhale as you lower. Avoid holding your breath."];
+TIPS["Incline Treadmill Walk"]=["Set incline to 8-12% and speed to 3.0-4.0 mph. Hold handrails only for balance, not to support your weight.","Walk with a natural gait, landing mid-foot. Keep your posture tall — avoid leaning into the machine.","One of the best fat-burning, joint-friendly cardio options. Elevates heart rate without impact stress on knees.","Target heart rate zone: 60-70% of max. For you, around 120-130 bpm."];
+TIPS["Chest Press Machine (heavy)"]=["Same setup as regular chest press. On heavy days, warm up with 2 light sets before your working sets.","Use a 3-second lowering phase. Heavy weights with slow negatives trigger maximum muscle fiber recruitment.","On heavy days, keep reps at 5-6. If you hit 6 clean reps, add 5 lbs next session — that is progressive overload.","Rest 2-3 minutes between heavy sets. Full recovery is essential for strength work."];
+TIPS["Shoulder Press Machine (heavy)"]=["Warm up with 2 lighter sets. On heavy sets range of motion can be slightly shorter — stop just below ear height.","Keep core extra braced on heavy presses. Without it, heavy overhead work compresses the lumbar spine.","6-8 reps here. Heavy shoulder pressing should be done early in the session when you are freshest.","If you feel shoulder clicking or pinching, stop and reduce weight. Pain with overhead pressing needs attention."];
+TIPS["Tricep Pushdown"]=["Same mechanics as cable pushdown. On strength days, go slightly heavier with 8 reps.","Keep strict form — no elbow drift. As weight increases the temptation to let elbows flare grows.","A V-bar allows slightly more weight. A rope allows a wider range of motion.","Finish with a full squeeze at the bottom on every rep — this builds the tricep horseshoe shape."];
+TIPS["Overhead Press"]=["Stand with feet shoulder-width apart. Hold the bar at shoulder height, grip just outside shoulder-width.","Press straight up, slightly back at the top. Keep core braced and glutes squeezed.","Avoid pressing in front of your face — this puts bar path forward of center of gravity.","Lower to chin height. For men over 50, full depth overhead pressing can stress the shoulder capsule."];
+TIPS["Barbell Row"]=["Hinge forward 45 degrees with a flat back, bar hanging below your chest. Grip slightly wider than shoulder-width.","Pull bar to your lower sternum, driving elbows back and squeezing mid-back at the top.","Keep lower back flat throughout. If you feel strain, reduce weight or switch to machine row.","Control the lowering phase fully. Letting the bar drop with gravity eliminates the eccentric contraction."];
+TIPS["Goblet Squat"]=["Hold a dumbbell vertically at your chest. Feet shoulder-width, toes out 30 degrees. Keep weight close to your body.","Sit back and down between your knees — elbows track inside the knees at the bottom. Chest stays tall.","This is a knee-friendly squat variation — the goblet position keeps torso upright, reducing knee stress.","Go only as deep as your mobility and knee comfort allow. Parallel or slightly above is fine."];
+TIPS["Step Up"]=["Use a box or bench at a height where your knee is at 90 degrees when your foot is on top.","Drive through the heel of the elevated foot to stand up. Avoid pushing off the back foot.","Step up slowly and with control. This unilateral movement is excellent for balance and hip stability.","Start with bodyweight only. Add dumbbells once form is solid. Keep step height moderate given your knee history."];
+TIPS["Ab Machine"]=["Adjust the seat so the pads rest on your upper chest and shoulders. Keep lower back pressed against the seat.","Crunch forward by rounding the upper back, not by pulling with neck or hip flexors.","Squeeze at full contraction and hold for 1 second. Return slowly with control.","Keep weight moderate and reps high at 15+. Heavy ab work can contribute to lower back issues over time."];
+TIPS["Russian Twist"]=["Sit with knees bent, feet can be elevated for more difficulty. Lean back 45 degrees and hold a weight.","Rotate side to side from the torso, touching the weight to the ground on each side. Keep chest up.","Avoid pulling with your arms — the rotation comes from your obliques. Breathe out on each twist.","If you have lower back issues, keep feet on floor and reduce rotation range."];
+TIPS["Dead Bug"]=["Lie on your back, arms extended to ceiling, knees bent at 90 degrees in the air.","Slowly lower right arm overhead and extend left leg simultaneously — keep lower back pressed to the floor.","The lower back must stay flat. If it arches, you have gone too far — reduce your range.","Return and alternate sides. This is a core stability exercise. Slow and controlled is everything."];
+
+const defaultTip=["Set up properly before each rep — adjust the machine to fit your body, not the other way around.","Focus on the target muscle. Slow controlled reps beat heavy sloppy reps every time.","Control the lowering phase over 2-3 seconds. This eccentric phase builds more muscle than the lifting phase.","If you feel joint pain rather than muscle burn, stop immediately. Distinguish productive discomfort from injury signals."];
+
 // ── STATE ──────────────────────────────────────────────────
-let rows = [];
-let timerInterval = null, timerRemaining = 0, timerTotal = 0, activeTimerRowId = null;
+let rows=[];
+let timerInterval=null,timerRemaining=0,timerTotal=0,activeTimerRowId=null;
 
 // ── HELPERS ────────────────────────────────────────────────
-function getTodayDate(){ return new Date().toISOString().split("T")[0]; }
-function getTodayDay(){ return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]; }
-function uid(){ return "r"+Date.now()+Math.floor(Math.random()*99999); }
-function loadLocal(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch{ return d; } }
-function saveLocal(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
-function getHistory(){ return loadLocal(HISTORY_KEY,{}); }
-function saveHistory(name,sets){
-  const h=getHistory();
-  h[name]=sets.map(s=>({weight:String(s.weight),reps:String(s.reps)}));
-  saveLocal(HISTORY_KEY,h);
-}
-function getLastDefaults(name){
-  const h=getHistory();
-  if(h[name]) return h[name].map(s=>({weight:s.weight,reps:s.reps,done:false}));
-  if(DEFAULTS[name]) return DEFAULTS[name].map(s=>({weight:String(s.weight),reps:String(s.reps),done:false}));
+function getTodayDate(){return new Date().toISOString().split("T")[0];}
+function getTodayDay(){return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()];}
+function uid(){return "r"+Date.now()+Math.floor(Math.random()*99999);}
+function loadLocal(k,d){try{const v=localStorage.getItem(k);return v!=null?JSON.parse(v):d;}catch{return d;}}
+function saveLocal(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+function getHistory(){return loadLocal(HISTORY_KEY,{});}
+function saveHistory(name,sets){const h=getHistory();h[name]=sets.map(s=>({weight:String(s.weight||""),reps:String(s.reps||"")}));saveLocal(HISTORY_KEY,h);}
+function persist(){saveLocal(STORAGE_KEY,rows);}
+
+function getDefaultSets(name){
+  const hist=getHistory();
+  if(hist[name]){
+    return hist[name].map(s=>({weight:String(s.weight||""),reps:String(s.reps||""),done:false}));
+  }
+  const ws=DEFAULTS[name];
+  const rs=DEFAULT_REPS[name];
+  if(ws&&rs){
+    const len=Math.max(ws.length,rs.length);
+    return Array.from({length:len},(_,i)=>({weight:String(ws[i]||0),reps:String(rs[i]||0),done:false}));
+  }
   return Array.from({length:MAX_SETS},()=>({weight:"",reps:"",done:false}));
 }
-function persist(){ saveLocal(STORAGE_KEY,rows); }
-function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function escHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
 // ── ROW FACTORY ────────────────────────────────────────────
 function emptyRow(){
   const last=rows[rows.length-1];
-  return { id:uid(), date:getTodayDate(), day:last?.day||getTodayDay(),
-    group:last?.group||"", exercise:"", customExercise:"",
+  return{id:uid(),date:getTodayDate(),day:last?last.day:getTodayDay(),
+    group:last?last.group:"",exercise:"",customExercise:"",
     sets:Array.from({length:MAX_SETS},()=>({weight:"",reps:"",done:false})),
-    notes:"", synced:false };
+    notes:"",synced:false};
 }
 
 // ── INIT ───────────────────────────────────────────────────
@@ -322,7 +372,7 @@ function init(){
   const now=new Date();
   document.getElementById("dateNum").textContent=now.getDate();
   document.getElementById("dateMon").textContent=now.toLocaleString("default",{month:"short"}).toUpperCase();
-  document.getElementById("dayPill").textContent=getTodayDay().toUpperCase()+" · "+getTodayDate();
+  document.getElementById("dayPill").textContent=getTodayDay().toUpperCase()+" - "+getTodayDate();
   const saved=loadLocal(STORAGE_KEY,[]);
   rows=saved.length?saved:[emptyRow()];
   renderAll();
@@ -337,241 +387,219 @@ function renderAll(){
 }
 
 function buildCard(row,idx){
-  const color=GROUP_COLORS[row.group]||"#444";
+  const color=GROUP_COLORS[row.group]||"#555";
   const displayName=row.exercise==="__custom__"?row.customExercise:row.exercise;
   const hasEx=(row.exercise&&row.exercise!=="__custom__")||row.customExercise;
-  const doneCount=row.sets.filter(s=>s.done).length;
+  const doneCount=row.sets.filter(function(s){return s.done;}).length;
   const isTimerRow=activeTimerRowId===row.id;
+  const target=TARGETS[row.exercise]||"";
+
+  const setsHtml=row.sets.map(function(s,si){
+    return '<div class="set-block'+(s.done?" done":"")+'" id="sb-'+row.id+'-'+si+'">'
+      +'<div class="set-top">'
+      +'<div class="set-num" style="background:'+(s.done?"#2a2a30":color)+'">'+( s.done?"&#10003;":(si+1))+'</div>'
+      +'<div class="set-inputs">'
+      +'<div class="set-field">'
+      +'<div class="set-field-lbl">Weight lbs</div>'
+      +'<input class="set-input'+(s.done?" done":"")+'" type="number" inputmode="decimal" value="'+escHtml(s.weight)+'" placeholder="-"'
+      +' data-rowid="'+row.id+'" data-si="'+si+'" data-field="weight" oninput="onSetInput(this)"/>'
+      +'</div>'
+      +'<div class="set-field">'
+      +'<div class="set-field-lbl">Reps</div>'
+      +'<input class="set-input'+(s.done?" done":"")+'" type="number" inputmode="numeric" value="'+escHtml(s.reps)+'" placeholder="-"'
+      +' data-rowid="'+row.id+'" data-si="'+si+'" data-field="reps" oninput="onSetInput(this)"/>'
+      +'</div>'
+      +'</div>'
+      +'</div>'
+      +'<div class="set-done-strip">'
+      +'<button class="done-btn" style="background:'+(s.done?color+"22":"transparent")+';color:'+(s.done?color:"#555")+'"'
+      +' data-rowid="'+row.id+'" data-si="'+si+'" onclick="onDoneBtn(this)">'
+      +(s.done?"&#10003; SET DONE  TAP TO UNDO":"TAP WHEN SET DONE")
+      +'</button>'
+      +'</div>'
+      +'</div>';
+  }).join("");
 
   const card=document.createElement("div");
   card.className="card";
   card.id="card-"+row.id;
   card.style.borderColor=row.synced?"#1f301f":color+"55";
 
-  const setsHtml=row.sets.map((s,si)=>`
-    <div class="set-block${s.done?" done":""}" id="sb-${row.id}-${si}">
-      <div class="set-top">
-        <div class="set-num" style="background:${s.done?"#2a2a30":color};min-width:36px">${s.done?"✓":si+1}</div>
-        <div class="set-inputs">
-          <div class="set-field">
-            <div class="set-field-label">Weight (lbs)</div>
-            <input class="set-input${s.done?" done":""}" type="number" inputmode="decimal"
-              value="${esc(s.weight)}" placeholder="—"
-              data-rowid="${row.id}" data-si="${si}" data-field="weight"
-              oninput="onSetInput(this)"/>
-          </div>
-          <div class="set-field">
-            <div class="set-field-label">Reps</div>
-            <input class="set-input${s.done?" done":""}" type="number" inputmode="numeric"
-              value="${esc(s.reps)}" placeholder="—"
-              data-rowid="${row.id}" data-si="${si}" data-field="reps"
-              oninput="onSetInput(this)"/>
-          </div>
-        </div>
-      </div>
-      <div class="set-done-row">
-        <button class="done-btn"
-          style="background:${s.done?color+"22":"transparent"};color:${s.done?color:"#444"};border-top:none"
-          data-rowid="${row.id}" data-si="${si}"
-          onclick="onDoneBtn(this)">
-          ${s.done?"✓ SET DONE — TAP TO UNDO":"○ TAP WHEN SET DONE"}
-        </button>
-      </div>
-    </div>`).join("");
+  let html='<div class="card-bar" style="background:'+color+'18">'
+    +'<div class="card-index" style="background:'+color+'">'+(idx+1)+'</div>'
+    +'<div class="card-title">'
+    +(displayName?'<strong>'+escHtml(displayName)+'</strong>':'<span class="ph">New Exercise</span>')
+    +(hasEx?'<span class="prog-pill" style="background:'+color+'33;color:'+color+'" id="pp-'+row.id+'">'+doneCount+'/'+MAX_SETS+'</span>':"")
+    +'</div>'
+    +(hasEx?'<button class="tip-btn" style="border-color:'+color+'66;color:'+color+'" data-ex="'+escHtml(displayName)+'" data-grp="'+escHtml(row.group)+'" onclick="onTipBtn(this)">&#128161;</button>':"")
+    +(row.synced?'<span class="sync-badge">done</span>':"")
+    +'<button class="remove-btn" data-rowid="'+row.id+'" onclick="onRemove(this)">x</button>'
+    +'</div>'
+    +'<div class="card-body">'
+    +'<div class="two-col">'
+    +'<div class="field-wrap"><div class="field-label">Day</div><div class="sel-wrap">'
+    +'<select data-rowid="'+row.id+'" data-field="day" onchange="onSelect(this)">'
+    +DAY_OPTIONS.map(function(d){return '<option value="'+d+'"'+(row.day===d?" selected":"")+'>'+d+'</option>';}).join("")
+    +'</select><span class="sel-arrow" style="color:'+color+'">v</span></div></div>'
+    +'<div class="field-wrap"><div class="field-label">Group</div><div class="sel-wrap">'
+    +'<select data-rowid="'+row.id+'" data-field="group" onchange="onSelect(this)">'
+    +'<option value="">Select</option>'
+    +GROUP_OPTIONS.map(function(g){return '<option value="'+g+'"'+(row.group===g?" selected":"")+'>'+g+'</option>';}).join("")
+    +'</select><span class="sel-arrow" style="color:'+color+'">v</span></div></div>'
+    +'</div>'
+    +'<div class="field-wrap"><div class="field-label">Exercise</div><div class="sel-wrap">'
+    +'<select data-rowid="'+row.id+'" data-field="exercise" onchange="onSelect(this)"'
+    +(row.group?"":" disabled")+' style="color:'+(row.exercise?"#fff":"#666")+'">'
+    +'<option value="">'+(row.group?"Select exercise":"Pick group first")+'</option>'
+    +(EXERCISE_MAP[row.group]||[]).map(function(ex){return '<option value="'+escHtml(ex)+'"'+(row.exercise===ex?" selected":"")+'>'+escHtml(ex)+'</option>';}).join("")
+    +'<option value="__custom__"'+(row.exercise==="__custom__"?" selected":"")+'>+ Custom exercise</option>'
+    +'</select><span class="sel-arrow" style="color:'+color+'">v</span></div>'
+    +(row.exercise==="__custom__"?'<input class="custom-input" style="border-color:'+color+'66" placeholder="Type exercise name..." value="'+escHtml(row.customExercise)+'" data-rowid="'+row.id+'" data-field="customExercise" oninput="onSelect(this)"/>':"")
+    +'</div>';
 
-  card.innerHTML=`
-    <div class="card-bar" style="background:${color}18">
-      <div class="card-index" style="background:${color}">${idx+1}</div>
-      <div class="card-title">
-        ${displayName?`<strong>${esc(displayName)}</strong>`:`<span class="ph">New Exercise</span>`}
-        ${hasEx?`<span class="prog-pill" style="background:${color}33;color:${color}" id="pp-${row.id}">${doneCount}/${MAX_SETS}</span>`:""}
-      </div>
-      ${hasEx?`<button class="tip-btn" style="border-color:${color}66;color:${color}" data-ex="${esc(displayName)}" data-grp="${esc(row.group)}" onclick="onTipBtn(this)">💡</button>`:""}
-      ${row.synced?`<span class="sync-badge">✓</span>`:""}
-      <button class="remove-btn" data-rowid="${row.id}" onclick="onRemove(this)">✕</button>
-    </div>
-    <div class="card-body">
-      <div class="two-col">
-        <div class="field-wrap">
-          <div class="field-label">DAY</div>
-          <div class="sel-wrap">
-            <select data-rowid="${row.id}" data-field="day" onchange="onSelect(this)">
-              ${DAY_OPTIONS.map(d=>`<option value="${d}"${row.day===d?" selected":""}>${d}</option>`).join("")}
-            </select>
-            <span class="sel-arrow" style="color:${color}">▾</span>
-          </div>
-        </div>
-        <div class="field-wrap">
-          <div class="field-label">GROUP</div>
-          <div class="sel-wrap">
-            <select data-rowid="${row.id}" data-field="group" onchange="onSelect(this)">
-              <option value="">Select</option>
-              ${GROUP_OPTIONS.map(g=>`<option value="${g}"${row.group===g?" selected":""}>${g}</option>`).join("")}
-            </select>
-            <span class="sel-arrow" style="color:${color}">▾</span>
-          </div>
-        </div>
-      </div>
-      <div class="field-wrap">
-        <div class="field-label">EXERCISE</div>
-        <div class="sel-wrap">
-          <select data-rowid="${row.id}" data-field="exercise" onchange="onSelect(this)"
-            ${!row.group?"disabled":""} style="color:${row.exercise?'#fff':'#666'}">
-            <option value="">${row.group?"Select exercise":"Pick group first"}</option>
-            ${(EXERCISE_MAP[row.group]||[]).map(ex=>`<option value="${ex}"${row.exercise===ex?" selected":""}>${ex}</option>`).join("")}
-            <option value="__custom__"${row.exercise==="__custom__"?" selected":""}>+ Custom exercise</option>
-          </select>
-          <span class="sel-arrow" style="color:${color}">▾</span>
-        </div>
-        ${row.exercise==="__custom__"?`<input class="custom-input" style="border-color:${color}66"
-          placeholder="Type exercise name..." value="${esc(row.customExercise)}"
-          data-rowid="${row.id}" data-field="customExercise" oninput="onSelect(this)"/>`:""}
-      </div>
-      ${hasEx?`
-        <div class="rest-row">
-          <span class="field-label">REST</span>
-          <div class="rest-btns">
-            ${[["1m",60],["90s",90],["2m",120],["3m",180]].map(([lbl,secs])=>`
-              <button class="rest-btn"
-                style="background:${isTimerRow?color:"#1a1a1f"};border-color:${color}77;color:${isTimerRow?"#fff":color}"
-                data-secs="${secs}" data-label="${esc(displayName||"Exercise")}" data-rowid="${row.id}"
-                onclick="onRestBtn(this)">${lbl}</button>`).join("")}
-          </div>
-        </div>
-        <div class="sets-wrap">${setsHtml}</div>`:""}
-      <input class="notes-input" placeholder="Notes (optional)..."
-        value="${esc(row.notes)}" data-rowid="${row.id}" data-field="notes" oninput="onSelect(this)"/>
-    </div>`;
+  if(hasEx){
+    if(target){
+      html+='<div class="target-badge">Target: <span>'+escHtml(target)+'</span></div>';
+    }
+    html+='<div class="rest-row"><span class="field-label">Rest</span><div class="rest-btns">'
+      +[["1m",60],["90s",90],["2m",120],["3m",180]].map(function(p){
+        return '<button class="rest-btn" style="background:'+(isTimerRow?color:"#1a1a1f")+';border-color:'+color+'77;color:'+(isTimerRow?"#fff":color)+'"'
+          +' data-secs="'+p[1]+'" data-label="'+escHtml(displayName||"Exercise")+'" data-rowid="'+row.id+'" onclick="onRestBtn(this)">'+p[0]+'</button>';
+      }).join("")
+      +'</div></div>'
+      +'<div class="sets-wrap">'+setsHtml+'</div>';
+  }
+
+  html+='<input class="notes-input" placeholder="Notes (optional)..." value="'+escHtml(row.notes)+'" data-rowid="'+row.id+'" data-field="notes" oninput="onSelect(this)"/>'
+    +'</div>';
+
+  card.innerHTML=html;
   return card;
 }
 
 function rerenderCard(rowId){
-  const row=rows.find(r=>r.id===rowId); if(!row) return;
+  const row=rows.find(function(r){return r.id===rowId;});
+  if(!row) return;
   const idx=rows.indexOf(row);
-  const old=document.querySelector(`[id="card-${rowId}"]`);
+  const old=document.querySelector('[id="card-'+rowId+'"]');
   if(old) old.replaceWith(buildCard(row,idx));
 }
 
-// ── EVENT HANDLERS (data-attribute based — no inline ID quoting issues) ──
+// ── EVENT HANDLERS ─────────────────────────────────────────
 function onSelect(el){
-  const rowId=el.dataset.rowid, field=el.dataset.field, value=el.value;
-  const row=rows.find(r=>r.id===rowId); if(!row) return;
+  const rowId=el.dataset.rowid,field=el.dataset.field,value=el.value;
+  const row=rows.find(function(r){return r.id===rowId;});
+  if(!row) return;
   if(field==="group"){
-    row.group=value; row.exercise=""; row.customExercise="";
-    row.sets=Array.from({length:MAX_SETS},()=>({weight:"",reps:"",done:false}));
+    row.group=value;row.exercise="";row.customExercise="";
+    row.sets=Array.from({length:MAX_SETS},function(){return{weight:"",reps:"",done:false};});
   } else if(field==="exercise"&&value&&value!=="__custom__"){
     row.exercise=value;
-    row.sets=getLastDefaults(value);
+    row.sets=getDefaultSets(value);
   } else {
     row[field]=value;
   }
-  row.synced=false; persist(); rerenderCard(rowId); updateFooter();
+  row.synced=false;persist();rerenderCard(rowId);updateFooter();
 }
 
 function onSetInput(el){
-  const rowId=el.dataset.rowid, si=parseInt(el.dataset.si), field=el.dataset.field;
-  const row=rows.find(r=>r.id===rowId); if(!row) return;
+  const rowId=el.dataset.rowid,si=parseInt(el.dataset.si),field=el.dataset.field;
+  const row=rows.find(function(r){return r.id===rowId;});
+  if(!row) return;
   row.sets[si][field]=el.value;
-  row.synced=false; persist(); updateFooter();
+  row.synced=false;persist();updateFooter();
 }
 
 function onDoneBtn(el){
-  const rowId=el.dataset.rowid, si=parseInt(el.dataset.si);
-  const row=rows.find(r=>r.id===rowId); if(!row) return;
+  const rowId=el.dataset.rowid,si=parseInt(el.dataset.si);
+  const row=rows.find(function(r){return r.id===rowId;});
+  if(!row) return;
   row.sets[si].done=!row.sets[si].done;
   const name=row.exercise==="__custom__"?row.customExercise:row.exercise;
   if(name) saveHistory(name,row.sets);
   persist();
-  // Update just this set block and progress pill without full rerender
+  // Surgical DOM update — no full rerender needed
   const sb=document.getElementById("sb-"+rowId+"-"+si);
-  const color=GROUP_COLORS[row.group]||"#444";
+  const color=GROUP_COLORS[row.group]||"#555";
   const s=row.sets[si];
   if(sb){
     sb.className="set-block"+(s.done?" done":"");
     const numEl=sb.querySelector(".set-num");
-    if(numEl){ numEl.textContent=s.done?"✓":si+1; numEl.style.background=s.done?"#2a2a30":color; }
-    sb.querySelectorAll(".set-input").forEach(inp=>{ inp.className="set-input"+(s.done?" done":""); });
+    if(numEl){numEl.innerHTML=s.done?"&#10003;":(si+1);numEl.style.background=s.done?"#2a2a30":color;}
+    sb.querySelectorAll(".set-input").forEach(function(inp){inp.className="set-input"+(s.done?" done":"");});
     const btn=sb.querySelector(".done-btn");
-    if(btn){ btn.style.background=s.done?color+"22":"transparent"; btn.style.color=s.done?color:"#444";
-      btn.textContent=s.done?"✓ SET DONE — TAP TO UNDO":"○ TAP WHEN SET DONE"; }
+    if(btn){
+      btn.style.background=s.done?color+"22":"transparent";
+      btn.style.color=s.done?color:"#555";
+      btn.innerHTML=s.done?"&#10003; SET DONE  TAP TO UNDO":"TAP WHEN SET DONE";
+    }
   }
   const pill=document.getElementById("pp-"+rowId);
-  if(pill){ pill.textContent=row.sets.filter(s=>s.done).length+"/"+MAX_SETS; }
+  if(pill){pill.textContent=row.sets.filter(function(s){return s.done;}).length+"/"+MAX_SETS;}
   updateFooter();
 }
 
 function onRemove(el){
   if(rows.length<=1) return;
-  rows=rows.filter(r=>r.id!==el.dataset.rowid);
-  persist(); renderAll(); updateFooter();
+  rows=rows.filter(function(r){return r.id!==el.dataset.rowid;});
+  persist();renderAll();updateFooter();
 }
-
-function onRestBtn(el){
-  startTimer(parseInt(el.dataset.secs), el.dataset.label, el.dataset.rowid);
-}
-
-function onTipBtn(el){
-  openTip(el.dataset.ex, el.dataset.grp);
-}
-
-// ── ADD ROW ────────────────────────────────────────────────
-function addRow(){
-  rows.push(emptyRow()); persist(); renderAll(); updateFooter();
-  setTimeout(()=>window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}),50);
-}
+function onRestBtn(el){startTimer(parseInt(el.dataset.secs),el.dataset.label,el.dataset.rowid);}
+function onTipBtn(el){openTip(el.dataset.ex,el.dataset.grp);}
+function addRow(){rows.push(emptyRow());persist();renderAll();updateFooter();setTimeout(function(){window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});},50);}
 
 // ── SYNC ───────────────────────────────────────────────────
 function updateFooter(){
-  const n=rows.filter(r=>!r.synced&&(r.exercise||r.customExercise)).length;
+  const n=rows.filter(function(r){return !r.synced&&(r.exercise||r.customExercise);}).length;
   document.getElementById("syncInfo").innerHTML=n>0
-    ?`<span style="color:#F5A623">⬤ ${n} unsaved</span>`
-    :`<span style="color:#3DBF7F">⬤ All saved</span>`;
+    ?'<span style="color:#F5A623">&#9899; '+n+' unsaved</span>'
+    :'<span style="color:#3DBF7F">&#9899; All saved</span>';
   const btn=document.getElementById("syncBtn");
-  btn.style.borderColor="#4F8EF7"; btn.style.color="#4F8EF7"; btn.style.background="#1a1a2a";
+  btn.style.borderColor="#4F8EF7";btn.style.color="#4F8EF7";btn.style.background="#1a1a2a";
 }
 
 async function handleSync(){
-  const unsynced=rows.filter(r=>!r.synced&&(r.exercise||r.customExercise));
+  const unsynced=rows.filter(function(r){return !r.synced&&(r.exercise||r.customExercise);});
   const btn=document.getElementById("syncBtn");
-  if(!unsynced.length){ btn.textContent="Nothing new"; setTimeout(()=>{ btn.textContent="📤 Save to Sheets"; updateFooter(); },2500); return; }
-  btn.textContent="⏳ Saving..."; btn.disabled=true;
-  const values=unsynced.map(r=>[
+  if(!unsynced.length){btn.textContent="Nothing new";setTimeout(function(){btn.textContent="Save to Sheets";updateFooter();},2500);return;}
+  btn.textContent="Saving...";btn.disabled=true;
+  const values=unsynced.map(function(r){return[
     r.date,r.day,r.group,r.exercise==="__custom__"?r.customExercise:r.exercise,
-    r.sets[0]?.weight||"",r.sets[0]?.reps||"",
-    r.sets[1]?.weight||"",r.sets[1]?.reps||"",
-    r.sets[2]?.weight||"",r.sets[2]?.reps||"",
-    r.sets[3]?.weight||"",r.sets[3]?.reps||"",
-    r.notes||""]);
+    r.sets[0]?r.sets[0].weight||"":"",r.sets[0]?r.sets[0].reps||"":"",
+    r.sets[1]?r.sets[1].weight||"":"",r.sets[1]?r.sets[1].reps||"":"",
+    r.sets[2]?r.sets[2].weight||"":"",r.sets[2]?r.sets[2].reps||"":"",
+    r.sets[3]?r.sets[3].weight||"":"",r.sets[3]?r.sets[3].reps||"":"",
+    r.notes||""];});
   try{
     await fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify({rows:values})});
-    unsynced.forEach(u=>{const r=rows.find(x=>x.id===u.id);if(r)r.synced=true;});
-    persist(); renderAll();
-    btn.textContent="✓ Saved!"; btn.style.color="#3DBF7F"; btn.style.borderColor="#3DBF7F"; btn.style.background="#1a3a1a";
-    setTimeout(()=>{ btn.textContent="📤 Save to Sheets"; btn.disabled=false; updateFooter(); },3000);
-  }catch{
-    btn.textContent="✗ Retry"; btn.style.color="#E05C5C"; btn.style.borderColor="#E05C5C"; btn.disabled=false;
-    setTimeout(()=>{ btn.textContent="📤 Save to Sheets"; updateFooter(); },4000);
+    unsynced.forEach(function(u){const r=rows.find(function(x){return x.id===u.id;});if(r)r.synced=true;});
+    persist();renderAll();
+    btn.textContent="Saved!";btn.style.color="#3DBF7F";btn.style.borderColor="#3DBF7F";btn.style.background="#1a3a1a";
+    setTimeout(function(){btn.textContent="Save to Sheets";btn.disabled=false;updateFooter();},3000);
+  }catch(err){
+    btn.textContent="Failed - retry";btn.style.color="#E05C5C";btn.style.borderColor="#E05C5C";btn.disabled=false;
+    setTimeout(function(){btn.textContent="Save to Sheets";updateFooter();},4000);
   }
 }
 
 // ── TIMER ─────────────────────────────────────────────────
 function startTimer(secs,label,rowId){
   clearInterval(timerInterval);
-  timerRemaining=secs; timerTotal=secs; activeTimerRowId=rowId;
+  timerRemaining=secs;timerTotal=secs;activeTimerRowId=rowId;
   document.getElementById("timerLabel").textContent=label;
   document.getElementById("timerOverlay").style.display="flex";
   tick();
-  timerInterval=setInterval(()=>{ timerRemaining--; if(timerRemaining<=0){timerRemaining=0;clearInterval(timerInterval);} tick(); },1000);
+  timerInterval=setInterval(function(){timerRemaining--;if(timerRemaining<=0){timerRemaining=0;clearInterval(timerInterval);}tick();},1000);
   rerenderCard(rowId);
 }
 function tick(){
-  const min=Math.floor(timerRemaining/60), sec=timerRemaining%60;
-  document.getElementById("timerText").textContent=`${min}:${String(sec).padStart(2,"0")}`;
+  const min=Math.floor(timerRemaining/60),sec=timerRemaining%60;
+  document.getElementById("timerText").textContent=min+":"+(sec<10?"0":"")+sec;
   const pct=timerTotal>0?timerRemaining/timerTotal:0;
   const circ=2*Math.PI*60;
   document.getElementById("timerArc").setAttribute("stroke-dashoffset",circ*(1-pct));
   document.getElementById("timerArc").setAttribute("stroke",pct>0.4?"#3DBF7F":pct>0.15?"#F5A623":"#E05C5C");
-  document.getElementById("timerSub").textContent=timerRemaining===0?"✓ REST DONE":"RESTING";
+  document.getElementById("timerSub").textContent=timerRemaining===0?"REST DONE":"RESTING";
 }
 function cancelTimer(){
   clearInterval(timerInterval);
@@ -580,40 +608,39 @@ function cancelTimer(){
 }
 
 // ── TECHNIQUE TIPS ─────────────────────────────────────────
-async function openTip(exName, group){
+function openTip(exName,group){
   document.getElementById("tipTitle").textContent=exName;
   document.getElementById("tipOverlay").style.display="flex";
   const emoji=GROUP_EMOJI[group]||"💪";
   const gifId=GIF_IDS[exName];
+  const tipLines=TIPS[exName]||defaultTip;
 
-  // Show loading
-  document.getElementById("tipBody").innerHTML=`<div class="tip-loading"><div class="spinner"></div><p>Loading...</p></div>`;
+  // Render tips immediately from local data — no API call, no network dependency
+  const tipHtml='<div class="tip-content">'+tipLines.map(function(l){
+    return '<div class="tip-line"><span class="tip-bullet">&#x203A;</span><span>'+escHtml(l)+'</span></div>';
+  }).join("")+'</div>';
 
-  // Fetch GIF (optional, graceful fail)
-  let imgHtml=`<div class="tip-emoji">${emoji}</div>`;
+  // Show emoji first, attempt GIF load in background
+  document.getElementById("tipBody")='<div class="tip-emoji">'+emoji+'</div>'+tipHtml;
+  document.getElementById("tipBody").innerHTML='<div class="tip-emoji">'+emoji+'</div>'+tipHtml;
+
+  // Try to load GIF asynchronously — graceful fallback already shown
   if(gifId){
-    try{
-      const r=await fetch(`https://exercisedb.p.rapidapi.com/exercises/exercise/${gifId}`,
-        {headers:{"x-rapidapi-key":"DEMO","x-rapidapi-host":"exercisedb.p.rapidapi.com"}});
-      if(r.ok){ const d=await r.json(); if(d.gifUrl) imgHtml=`<div class="tip-img-wrap"><img class="tip-img" src="${d.gifUrl}" onerror="this.parentElement.outerHTML='<div class=tip-emoji>${emoji}</div>'"/></div>`; }
-    }catch{}
+    fetch("https://exercisedb.p.rapidapi.com/exercises/exercise/"+gifId,
+      {headers:{"x-rapidapi-key":"DEMO","x-rapidapi-host":"exercisedb.p.rapidapi.com"}})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){
+      if(d&&d.gifUrl){
+        const imgWrap='<div class="tip-img-wrap"><img class="tip-img" src="'+d.gifUrl+'" onerror="this.parentElement.innerHTML=\'<div class=tip-emoji>'+emoji+'</div>\'"/></div>';
+        document.getElementById("tipBody").innerHTML=imgWrap+tipHtml;
+      }
+    })
+    .catch(function(){});// silently ignore — emoji fallback already showing
   }
-
-  // Use built-in tips (always works, no CORS issues)
-  const tipText=TIPS[exName]||`• Set up properly before each rep — adjust the machine to fit your body, not the other way around.\n• Focus on the target muscle. Slow, controlled reps with mind-muscle connection beat heavy sloppy reps.\n• Control the lowering phase (2-3 seconds). This eccentric phase builds more muscle than the lifting phase.\n• If you feel joint pain (not muscle burn), stop immediately. Men over 50 should distinguish between productive discomfort and injury signals.`;
-
-  const lines=tipText.split("\n").filter(l=>l.trim());
-  const tipHtml=`<div class="tip-content">${lines.map(l=>`
-    <div class="tip-line">
-      <span class="tip-bullet">›</span>
-      <span>${esc(l.replace(/^[•\-\*]\s*/,""))}</span>
-    </div>`).join("")}</div>`;
-
-  document.getElementById("tipBody").innerHTML=imgHtml+tipHtml;
 }
 
-function closeTip(){ document.getElementById("tipOverlay").style.display="none"; }
-document.addEventListener("keydown",e=>{ if(e.key==="Escape"){cancelTimer();closeTip();} });
+function closeTip(){document.getElementById("tipOverlay").style.display="none";}
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){cancelTimer();closeTip();}});
 
 init();
 </script>
