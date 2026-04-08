@@ -132,7 +132,7 @@
 </div>
 <script>
 const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbzxv2Yzr6imw58OS4TxwPzWuMRCGaxFvgPevpt5br8hRw4wkrRLD_nzwcxhRsKUvkeN/exec";
-const STORAGE_KEY="ironLog_v5";
+const STORAGE_KEY="ironLog_v6";
 const HISTORY_KEY="ironLog_hist";
 const MAX_SETS=4;
 
@@ -336,8 +336,8 @@ let timerInterval=null,timerRemaining=0,timerTotal=0,activeTimerRowId=null;
 function getTodayDate(){return new Date().toISOString().split("T")[0];}
 function getTodayDay(){return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()];}
 function uid(){return "r"+Date.now()+Math.floor(Math.random()*99999);}
-function loadLocal(k,d){try{const v=localStorage.getItem(k);return v!=null?JSON.parse(v):d;}catch{return d;}}
-function saveLocal(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+function loadLocal(k,d){try{const v=localStorage.getItem(k);return v!=null?JSON.parse(v):d;}catch(e){return d;}}
+function saveLocal(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function getHistory(){return loadLocal(HISTORY_KEY,{});}
 function saveHistory(name,sets){const h=getHistory();h[name]=sets.map(s=>({weight:String(s.weight||""),reps:String(s.reps||"")}));saveLocal(HISTORY_KEY,h);}
 function persist(){saveLocal(STORAGE_KEY,rows);}
@@ -383,7 +383,7 @@ function init(){
 function renderAll(){
   const list=document.getElementById("rowList");
   list.innerHTML="";
-  rows.forEach((row,idx)=>list.appendChild(buildCard(row,idx)));
+  for(var i=0;i<rows.length;i++){list.appendChild(buildCard(rows[i],i));}
 }
 
 function buildCard(row,idx){
@@ -642,7 +642,7 @@ function openTip(exName,group){
 function closeTip(){document.getElementById("tipOverlay").style.display="none";}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){cancelTimer();closeTip();}});
 
-init();
+try{init();}catch(err){document.getElementById("rowList").innerHTML='<div style="color:#E05C5C;padding:20px;font-size:13px">Error: '+err.message+'</div>';};
 </script>
 </body>
 </html>
