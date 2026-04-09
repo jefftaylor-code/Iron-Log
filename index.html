@@ -755,11 +755,15 @@ function openTip(exName,group){
     linesHtml+='<div class="tip-line"><span class="tip-bullet">›</span><span>'+escHtml(tipLines[i])+'</span></div>';
   }
   
-  // YouTube search link
-  var ytQuery=encodeURIComponent(cleanName+" form tutorial");
-  var ytLink='<a href="https://www.youtube.com/results?search_query='+ytQuery+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:10px 16px;background:#E05C5C;color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">▶ Watch Form Videos</a>';
+  // YouTube search links - two channels
+  var ytQueryNippard=encodeURIComponent(cleanName+" Jeff Nippard");
+  var ytQueryBuff=encodeURIComponent(cleanName+" BUFF Dudes");
+  var ytLinks='<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">'
+    +'<a href="https://www.youtube.com/results?search_query='+ytQueryNippard+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:9px 14px;background:#E05C5C;color:#fff;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600">▶ Jeff Nippard</a>'
+    +'<a href="https://www.youtube.com/results?search_query='+ytQueryBuff+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:9px 14px;background:#E05C5C;color:#fff;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600">▶ BUFF Dudes</a>'
+    +'</div>';
   
-  bodyEl.innerHTML='<div class="tip-emoji">'+emoji+'</div><div class="tip-content">'+linesHtml+ytLink+'</div>';
+  bodyEl.innerHTML='<div class="tip-emoji">'+emoji+'</div><div class="tip-content">'+linesHtml+ytLinks+'</div>';
 }
 function closeTip(){document.getElementById("tipOverlay").style.display="none";}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){cancelTimer();closeTip();}});
