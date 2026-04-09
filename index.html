@@ -755,16 +755,59 @@ function openTip(exName,group){
     linesHtml+='<div class="tip-line"><span class="tip-bullet">›</span><span>'+escHtml(tipLines[i])+'</span></div>';
   }
   
-  // YouTube search links - search within specific channels
-  var ytQueryNippard=encodeURIComponent(cleanName);
-  var ytQueryBuff=encodeURIComponent(cleanName);
-  // Channel IDs: Jeff Nippard = UC68TLK0mAEzUyHx5x5k-S1Q, BUFF Dudes = UC_Ih0f1H6-5X5fCU9GdvVtA
-  var ytLinks='<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">'
-    +'<a href="https://www.youtube.com/@JeffNippard/search?query='+ytQueryNippard+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:9px 14px;background:#E05C5C;color:#fff;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600">▶ Jeff Nippard</a>'
-    +'<a href="https://www.youtube.com/@BuffDudes/search?query='+ytQueryBuff+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:9px 14px;background:#E05C5C;color:#fff;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600">▶ BUFF Dudes</a>'
-    +'</div>';
+  // Curated YouTube video URLs - one per exercise
+  var VIDEO_MAP={
+    // Push
+    "Chest Press Machine":"https://www.youtube.com/watch?v=xUm0BiZCWlQ",
+    "Incline Dumbbell Press":"https://www.youtube.com/watch?v=8iPEnn-ltC8",
+    "Shoulder Press Machine":"https://www.youtube.com/watch?v=Wqq43dKW1TU",
+    "Lateral Raise (Dumbbells)":"https://www.youtube.com/watch?v=3VcKaXpzqRo",
+    "Tricep Pushdown (Cable)":"https://www.youtube.com/watch?v=2-LAMcpzODU",
+    "Overhead Tricep Extension":"https://www.youtube.com/watch?v=YbX7Wd8jQ-Q",
+    "Cable Fly":"https://www.youtube.com/watch?v=Iwe6AmxVf7o",
+    "Pec Deck":"https://www.youtube.com/watch?v=Z57CtFmRMxI",
+    // Pull
+    "Lat Pulldown":"https://www.youtube.com/watch?v=CAwf7n6Luuc",
+    "Lat Pulldown (heavy)":"https://www.youtube.com/watch?v=CAwf7n6Luuc",
+    "Seated Cable Row":"https://www.youtube.com/watch?v=GZbfZ033f74",
+    "Machine Row":"https://www.youtube.com/watch?v=xQNrFHEMhI4",
+    "Machine Row (heavy)":"https://www.youtube.com/watch?v=xQNrFHEMhI4",
+    "Face Pulls (Cable)":"https://www.youtube.com/watch?v=rep-qVOkqgk",
+    "Dumbbell Curl":"https://www.youtube.com/watch?v=ykJmrZ5v0Oo",
+    "Hammer Curl":"https://www.youtube.com/watch?v=zC3nLlEvin4",
+    "Assisted Pull-Up":"https://www.youtube.com/watch?v=eGo4IYlbE5g",
+    "Cable Curl":"https://www.youtube.com/watch?v=NFzTWp2qpiE",
+    // Legs
+    "Leg Press":"https://www.youtube.com/watch?v=IZxyjW7MPJQ",
+    "Romanian Deadlift (Dumbbells)":"https://www.youtube.com/watch?v=hCDzSR6bW10",
+    "Leg Curl Machine":"https://www.youtube.com/watch?v=1Tq3QdYUuHs",
+    "Leg Extension Machine":"https://www.youtube.com/watch?v=YyvSfVjQeL0",
+    "Calf Raise Machine":"https://www.youtube.com/watch?v=-M4-G8p8fmc",
+    "Hip Abductor Machine":"https://www.youtube.com/watch?v=FEczajJmwEo",
+    "Goblet Squat":"https://www.youtube.com/watch?v=MeIiIdhvXT4",
+    "Step Up":"https://www.youtube.com/watch?v=dQqApCGd5Ss",
+    // Upper Strength
+    "Chest Press Machine (heavy)":"https://www.youtube.com/watch?v=xUm0BiZCWlQ",
+    "Shoulder Press Machine (heavy)":"https://www.youtube.com/watch?v=Wqq43dKW1TU",
+    "Tricep Pushdown":"https://www.youtube.com/watch?v=2-LAMcpzODU",
+    "Overhead Press":"https://www.youtube.com/watch?v=_RlRDWO2jfg",
+    "Barbell Row":"https://www.youtube.com/watch?v=FWJR5Ve8bnQ",
+    // Core
+    "Plank":"https://www.youtube.com/watch?v=ASdvN_XEl_c",
+    "Cable Crunch":"https://www.youtube.com/watch?v=AV5PmZJIrrw",
+    "Seated Leg Raise":"https://www.youtube.com/watch?v=l4kQd9eWclE",
+    "Ab Machine":"https://www.youtube.com/watch?v=m4ytaCJZpl0",
+    "Russian Twist":"https://www.youtube.com/watch?v=wkD8rjkodUI",
+    "Dead Bug":"https://www.youtube.com/watch?v=I5xbsA71v1A"
+  };
   
-  bodyEl.innerHTML='<div class="tip-emoji">'+emoji+'</div><div class="tip-content">'+linesHtml+ytLinks+'</div>';
+  var videoUrl=VIDEO_MAP[cleanName];
+  var ytLink="";
+  if(videoUrl){
+    ytLink='<a href="'+videoUrl+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:16px;padding:10px 16px;background:#E05C5C;color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">▶ Watch Form Video</a>';
+  }
+  
+  bodyEl.innerHTML='<div class="tip-emoji">'+emoji+'</div><div class="tip-content">'+linesHtml+ytLink+'</div>';
 }
 function closeTip(){document.getElementById("tipOverlay").style.display="none";}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){cancelTimer();closeTip();}});
