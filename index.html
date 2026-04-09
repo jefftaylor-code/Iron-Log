@@ -754,7 +754,12 @@ function openTip(exName,group){
   for(var i=0;i<tipLines.length;i++){
     linesHtml+='<div class="tip-line"><span class="tip-bullet">›</span><span>'+escHtml(tipLines[i])+'</span></div>';
   }
-  bodyEl.innerHTML='<div class="tip-emoji">'+emoji+'</div><div class="tip-content">'+linesHtml+'</div>';
+  
+  // YouTube search link
+  var ytQuery=encodeURIComponent(cleanName+" form tutorial");
+  var ytLink='<a href="https://www.youtube.com/results?search_query='+ytQuery+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:10px 16px;background:#E05C5C;color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">▶ Watch Form Videos</a>';
+  
+  bodyEl.innerHTML='<div class="tip-emoji">'+emoji+'</div><div class="tip-content">'+linesHtml+ytLink+'</div>';
 }
 function closeTip(){document.getElementById("tipOverlay").style.display="none";}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){cancelTimer();closeTip();}});
