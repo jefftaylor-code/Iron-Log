@@ -461,7 +461,11 @@ function calcVolume(sets){
 function saveVolume(name,vol){
   var h=getVolumeHistory();
   var clean=stripStar(name);
-  var entry=h[clean]||{current:null,previous:null};
+  var entry=h[clean];
+  // Handle legacy format (just a number) or missing entry
+  if(typeof entry==="number"||entry===null||entry===undefined){
+    entry={current:typeof entry==="number"?entry:null,previous:null};
+  }
   // Shift current to previous, store new as current
   entry.previous=entry.current;
   entry.current=vol;
@@ -471,12 +475,12 @@ function saveVolume(name,vol){
 function getVolumeComparison(name){
   var h=getVolumeHistory();
   var clean=stripStar(name);
-  return h[clean]||{current:null,previous:null};
-}
-function getVolumeComparison(name){
-  var h=getVolumeHistory();
-  var clean=stripStar(name);
-  return h[clean]||{current:null,previous:null};
+  var entry=h[clean];
+  // Handle legacy format (just a number) or missing entry
+  if(typeof entry==="number"){
+    return {current:entry,previous:null};
+  }
+  return entry||{current:null,previous:null};
 }
 
 function getDefaultSets(name){
