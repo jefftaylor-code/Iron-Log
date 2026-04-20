@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
-    :root{--bg:#0d0d0f;--bg2:#111114;--bg3:#141416;--border:#1e1e24;--border2:#2a2a30;--text:#fff;--text2:#888;--text3:#444;--success:#3DBF7F;--warn:#F5A623;--danger:#E05C5C;--info:#4F8EF7}
+    :root{--bg:#0d0d0f;--bg2:#111114;--bg3:#141416;--border:#1e1e24;--border2:#2a2a30;--text:#fff;--text2:#bbb;--text3:#777;--success:#3DBF7F;--warn:#F5A623;--danger:#E05C5C;--info:#4F8EF7}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overscroll-behavior:none}
     select,input,button{font-family:'DM Sans',sans-serif}
@@ -70,9 +70,23 @@
     .set-input-done{color:var(--text3);border-bottom:1px solid var(--success);}
     .set-done-strip{border-top:1px solid var(--border);display:flex}
     .done-btn{flex:1;background:none;border:none;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:0.8px;padding:7px 8px;text-transform:uppercase;transition:background 0.15s,color 0.15s;text-align:center}
-    .notes-input{background:transparent;border:none;border-top:1px solid var(--border);color:var(--text3);font-size:11px;padding:8px 0 0;outline:none;width:100%}
-    .notes-input::placeholder{color:#222}
+    .notes-input{background:transparent;border:none;border-top:1px solid var(--border);color:var(--text2);font-size:11px;padding:8px 0 0;outline:none;width:100%}
+    .notes-input::placeholder{color:#444}
+    .vol-compare{font-size:11px;padding:6px 0 2px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+    .vol-arrow{font-size:12px}
+    .vol-prev{font-size:10px;color:#666;background:#1a1a1f;padding:2px 6px;border-radius:4px}
     .add-btn{display:block;width:calc(100% - 20px);margin:12px 10px 0;background:var(--bg2);border:1px dashed var(--border2);border-radius:10px;color:var(--text3);font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:3px;padding:13px;cursor:pointer}
+    .mini-timer{position:fixed;bottom:52px;left:0;right:0;background:linear-gradient(135deg,#1a2a1a 0%,#0d1a0d 100%);border-top:1px solid var(--success);display:flex;align-items:center;padding:8px 14px;z-index:101;gap:12px}
+    .mini-timer-info{flex:1;cursor:pointer;display:flex;align-items:center;gap:12px}
+    .mini-timer-time{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--success);letter-spacing:2px;min-width:60px}
+    .mini-timer-label{font-size:11px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .mini-timer-progress{position:absolute;bottom:0;left:0;height:3px;background:var(--success);transition:width 1s linear}
+    .mini-timer-cancel{background:none;border:none;color:#666;font-size:18px;padding:4px 8px;cursor:pointer}
+    .mini-timer.ending{background:linear-gradient(135deg,#2a1a1a 0%,#1a0d0d 100%);border-top-color:var(--danger)}
+    .mini-timer.ending .mini-timer-time{color:var(--danger)}
+    .mini-timer.ending .mini-timer-progress{background:var(--danger)}
+    @keyframes timerPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    .mini-timer.done{animation:timerPulse 0.3s ease 3}
     .sync-footer{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;z-index:100}
     .sync-info{font-size:12px}
     .sync-btn{border:1px solid;border-radius:9px;font-size:12px;font-weight:700;padding:9px 16px;cursor:pointer;letter-spacing:0.5px}
@@ -106,7 +120,14 @@
   <div class="row-list" id="rowList"></div>
   <button class="add-btn" onclick="addRow()">+ ADD EXERCISE</button>
 </div>
-<div id="volumeToast" style="display:none;position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1a1a2a;border:1px solid #2a2a30;border-radius:10px;padding:10px 18px;font-size:14px;z-index:99;transition:opacity 0.3s;box-shadow:0 4px 20px rgba(0,0,0,0.5)"></div>
+<div class="mini-timer" id="miniTimer" style="display:none">
+  <div class="mini-timer-info" onclick="expandTimer()">
+    <div class="mini-timer-time" id="miniTimerTime">0:00</div>
+    <div class="mini-timer-label" id="miniTimerLabel">Resting</div>
+  </div>
+  <div class="mini-timer-progress" id="miniTimerProgress"></div>
+  <button class="mini-timer-cancel" onclick="cancelTimer()">✕</button>
+</div>
 <div class="sync-footer">
   <div class="sync-info" id="syncInfo"></div>
   <div style="display:flex;gap:8px">
@@ -114,7 +135,7 @@
     <button class="sync-btn" id="syncBtn" onclick="handleSync()">Save to Sheets</button>
   </div>
 </div>
-<div class="overlay" id="timerOverlay" style="display:none" onclick="cancelTimer()">
+<div class="overlay" id="timerOverlay" style="display:none" onclick="minimizeTimer()">
   <div class="timer-box" onclick="event.stopPropagation()">
     <div class="timer-lbl" id="timerLabel"></div>
     <svg width="140" height="140" viewBox="0 0 140 140">
@@ -125,7 +146,10 @@
       <text x="70" y="78" text-anchor="middle" fill="white" font-size="34" font-family="Bebas Neue" letter-spacing="2" id="timerText">0:00</text>
     </svg>
     <div class="timer-sub" id="timerSub">RESTING</div>
-    <button class="timer-dismiss" onclick="cancelTimer()">DISMISS</button>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="timer-dismiss" onclick="minimizeTimer()">MINIMIZE</button>
+      <button class="timer-dismiss" style="background:#E05C5C33;border-color:#E05C5C;color:#E05C5C" onclick="cancelTimer()">CANCEL</button>
+    </div>
   </div>
 </div>
 <div class="overlay" id="tipOverlay" style="display:none" onclick="closeTip()">
@@ -148,12 +172,12 @@ var GROUP_COLORS={Push:"#4F8EF7",Pull:"#E05C5C",Legs:"#F5A623","Upper Strength":
 var GROUP_EMOJI={Push:"💪",Pull:"🏋️",Legs:"🦵","Upper Strength":"⚡",Cardio:"🏃",Core:"🎯"};
 
 var EXERCISE_MAP={
-  Push:["★ Chest Press Machine","★ Incline Dumbbell Press","★ Shoulder Press Machine","★ Lateral Raise (Dumbbells)","★ Tricep Pushdown (Cable)","★ Overhead Tricep Extension","Cable Fly","Pec Deck"],
-  Pull:["★ Lat Pulldown","★ Seated Cable Row","★ Machine Row","★ Face Pulls (Cable)","★ Dumbbell Curl","★ Hammer Curl","Assisted Pull-Up","Cable Curl"],
-  Legs:["★ Leg Press","★ Romanian Deadlift (Dumbbells)","★ Leg Curl Machine","★ Leg Extension Machine","★ Calf Raise Machine","★ Hip Abductor Machine","Goblet Squat","Step Up"],
-  "Upper Strength":["★ Chest Press Machine (heavy)","★ Lat Pulldown (heavy)","★ Shoulder Press Machine (heavy)","★ Machine Row (heavy)","★ Dumbbell Curl","★ Tricep Pushdown","Overhead Press","Barbell Row"],
+  Push:["★ Chest Press Machine","★ Incline Dumbbell Press","★ Shoulder Press Machine","★ Lateral Raise (Dumbbells)","★ Tricep Pushdown (Cable)","★ Overhead Tricep Extension","Cable Fly","Pec Deck","Smith Machine Bench Press","Dumbbell Bench Press","Dumbbell Shoulder Press","Tricep Dips (Assisted)"],
+  Pull:["★ Lat Pulldown","★ Seated Cable Row","★ Machine Row","★ Face Pulls (Cable)","★ Dumbbell Curl","★ Hammer Curl","Assisted Pull-Up","Cable Curl","Dumbbell Row","Reverse Fly Machine","Straight Arm Pulldown"],
+  Legs:["★ Leg Press","★ Romanian Deadlift (Dumbbells)","★ Leg Curl Machine","★ Leg Extension Machine","★ Calf Raise Machine","★ Hip Abductor Machine","Goblet Squat","Step Up","Smith Machine Deadlift","Dumbbell Leg Curl","Hip Adductor Machine","Smith Machine Squat","Glute Kickback Machine"],
+  "Upper Strength":["★ Chest Press Machine (heavy)","★ Lat Pulldown (heavy)","★ Shoulder Press Machine (heavy)","★ Machine Row (heavy)","★ Dumbbell Curl","★ Tricep Pushdown","Overhead Press","Barbell Row","Smith Machine Bench Press (heavy)","Smith Machine Deadlift (heavy)","Dumbbell Row (heavy)"],
   Cardio:["★ Incline Treadmill Walk","Treadmill Run","Elliptical","Stationary Bike","Stair Climber","Row Machine"],
-  Core:["★ Plank","★ Cable Crunch","★ Seated Leg Raise","Ab Machine","Russian Twist","Dead Bug"]
+  Core:["★ Plank","★ Cable Crunch","★ Seated Leg Raise","Ab Machine","Russian Twist","Dead Bug","Hanging Knee Raise","Bicycle Crunch"]
 };
 
 // Target sets x reps for each exercise
@@ -166,6 +190,10 @@ var TARGETS={
   "Overhead Tricep Extension":"3 sets x 12-15 reps",
   "Cable Fly":"3 sets x 12-15 reps",
   "Pec Deck":"3 sets x 12-15 reps",
+  "Smith Machine Bench Press":"3 sets x 8-10 reps",
+  "Dumbbell Bench Press":"3 sets x 10-12 reps",
+  "Dumbbell Shoulder Press":"3 sets x 10-12 reps",
+  "Tricep Dips (Assisted)":"3 sets x 10-12 reps",
   "Lat Pulldown":"4 sets x 8-10 reps",
   "Seated Cable Row":"3 sets x 10-12 reps",
   "Machine Row":"3 sets x 8-10 reps",
@@ -174,6 +202,9 @@ var TARGETS={
   "Hammer Curl":"3 sets x 12-15 reps",
   "Assisted Pull-Up":"3 sets x 8 reps",
   "Cable Curl":"3 sets x 12-15 reps",
+  "Dumbbell Row":"3 sets x 10-12 reps",
+  "Reverse Fly Machine":"3 sets x 12-15 reps",
+  "Straight Arm Pulldown":"3 sets x 12-15 reps",
   "Leg Press":"4 sets x 10-12 reps",
   "Romanian Deadlift (Dumbbells)":"3 sets x 10-12 reps",
   "Leg Curl Machine":"3 sets x 10-12 reps",
@@ -182,6 +213,11 @@ var TARGETS={
   "Hip Abductor Machine":"2 sets x 15 reps",
   "Goblet Squat":"3 sets x 12 reps",
   "Step Up":"3 sets x 12 reps",
+  "Smith Machine Deadlift":"3 sets x 8-10 reps",
+  "Dumbbell Leg Curl":"3 sets x 12-15 reps",
+  "Hip Adductor Machine":"2 sets x 15 reps",
+  "Smith Machine Squat":"3 sets x 10-12 reps",
+  "Glute Kickback Machine":"3 sets x 12-15 reps",
   "Chest Press Machine (heavy)":"4 sets x 5-6 reps",
   "Lat Pulldown (heavy)":"4 sets x 5-6 reps",
   "Shoulder Press Machine (heavy)":"3 sets x 6-8 reps",
@@ -189,13 +225,23 @@ var TARGETS={
   "Tricep Pushdown":"2 sets x 8 reps",
   "Overhead Press":"3 sets x 8 reps",
   "Barbell Row":"3 sets x 8 reps",
+  "Smith Machine Bench Press (heavy)":"3 sets x 5-6 reps",
+  "Smith Machine Deadlift (heavy)":"3 sets x 5-6 reps",
+  "Dumbbell Row (heavy)":"3 sets x 6-8 reps",
   "Incline Treadmill Walk":"35 min — 8-12% incline, 3.5-4 mph",
+  "Treadmill Run":"20-30 min",
+  "Elliptical":"20-30 min",
+  "Stationary Bike":"20-30 min",
+  "Stair Climber":"15-20 min",
+  "Row Machine":"15-20 min",
   "Plank":"3 sets x 45-60 sec",
   "Cable Crunch":"3 sets x 15 reps",
   "Seated Leg Raise":"3 sets x 15 reps",
   "Ab Machine":"3 sets x 15 reps",
   "Russian Twist":"3 sets x 20 reps",
-  "Dead Bug":"3 sets x 10 reps"
+  "Dead Bug":"3 sets x 10 reps",
+  "Hanging Knee Raise":"3 sets x 12-15 reps",
+  "Bicycle Crunch":"3 sets x 20 reps"
 };
 
 // Starting default weights/reps (overridden by saved history after first session)
@@ -208,6 +254,10 @@ var DEFAULTS={
   "Overhead Tricep Extension":[40,40,40],
   "Cable Fly":[30,30,30],
   "Pec Deck":[80,80,80],
+  "Smith Machine Bench Press":[95,95,95],
+  "Dumbbell Bench Press":[40,40,40],
+  "Dumbbell Shoulder Press":[30,30,30],
+  "Tricep Dips (Assisted)":[40,40,40],
   "Lat Pulldown":[110,110,110,110],
   "Seated Cable Row":[100,100,100],
   "Machine Row":[100,100,100],
@@ -216,6 +266,9 @@ var DEFAULTS={
   "Hammer Curl":[30,30,30],
   "Assisted Pull-Up":[50,50,50],
   "Cable Curl":[40,40,40],
+  "Dumbbell Row":[45,45,45],
+  "Reverse Fly Machine":[60,60,60],
+  "Straight Arm Pulldown":[40,40,40],
   "Leg Press":[180,180,180,180],
   "Romanian Deadlift (Dumbbells)":[50,50,50],
   "Leg Curl Machine":[70,70,70],
@@ -224,6 +277,11 @@ var DEFAULTS={
   "Hip Abductor Machine":[80,80],
   "Goblet Squat":[40,40,40],
   "Step Up":[30,30,30],
+  "Smith Machine Deadlift":[95,95,95],
+  "Dumbbell Leg Curl":[20,20,20],
+  "Hip Adductor Machine":[80,80],
+  "Smith Machine Squat":[95,95,95],
+  "Glute Kickback Machine":[50,50,50],
   "Chest Press Machine (heavy)":[120,120,120,120],
   "Lat Pulldown (heavy)":[130,130,130,130],
   "Shoulder Press Machine (heavy)":[100,100,100],
@@ -231,13 +289,23 @@ var DEFAULTS={
   "Tricep Pushdown":[55,55],
   "Overhead Press":[80,80,80],
   "Barbell Row":[95,95,95],
+  "Smith Machine Bench Press (heavy)":[115,115,115],
+  "Smith Machine Deadlift (heavy)":[135,135,135],
+  "Dumbbell Row (heavy)":[55,55,55],
   "Incline Treadmill Walk":[0],
+  "Treadmill Run":[0],
+  "Elliptical":[0],
+  "Stationary Bike":[0],
+  "Stair Climber":[0],
+  "Row Machine":[0],
   "Plank":[0,0,0],
   "Cable Crunch":[50,50,50],
   "Seated Leg Raise":[0,0,0],
   "Ab Machine":[60,60,60],
   "Russian Twist":[15,15,15],
-  "Dead Bug":[0,0,0]
+  "Dead Bug":[0,0,0],
+  "Hanging Knee Raise":[0,0,0],
+  "Bicycle Crunch":[0,0,0]
 };
 
 // Default reps per exercise
@@ -250,6 +318,10 @@ var DEFAULT_REPS={
   "Overhead Tricep Extension":[12,12,12],
   "Cable Fly":[12,12,12],
   "Pec Deck":[12,12,12],
+  "Smith Machine Bench Press":[10,10,10],
+  "Dumbbell Bench Press":[10,10,10],
+  "Dumbbell Shoulder Press":[10,10,10],
+  "Tricep Dips (Assisted)":[10,10,10],
   "Lat Pulldown":[10,10,10,10],
   "Seated Cable Row":[10,10,10],
   "Machine Row":[10,10,10],
@@ -258,6 +330,9 @@ var DEFAULT_REPS={
   "Hammer Curl":[12,12,12],
   "Assisted Pull-Up":[8,8,8],
   "Cable Curl":[12,12,12],
+  "Dumbbell Row":[10,10,10],
+  "Reverse Fly Machine":[12,12,12],
+  "Straight Arm Pulldown":[12,12,12],
   "Leg Press":[12,12,12,12],
   "Romanian Deadlift (Dumbbells)":[10,10,10],
   "Leg Curl Machine":[12,12,12],
@@ -266,6 +341,11 @@ var DEFAULT_REPS={
   "Hip Abductor Machine":[15,15],
   "Goblet Squat":[12,12,12],
   "Step Up":[12,12,12],
+  "Smith Machine Deadlift":[10,10,10],
+  "Dumbbell Leg Curl":[12,12,12],
+  "Hip Adductor Machine":[15,15],
+  "Smith Machine Squat":[10,10,10],
+  "Glute Kickback Machine":[12,12,12],
   "Chest Press Machine (heavy)":[6,6,6,6],
   "Lat Pulldown (heavy)":[6,6,6,6],
   "Shoulder Press Machine (heavy)":[6,6,6],
@@ -273,13 +353,23 @@ var DEFAULT_REPS={
   "Tricep Pushdown":[8,8],
   "Overhead Press":[8,8,8],
   "Barbell Row":[8,8,8],
+  "Smith Machine Bench Press (heavy)":[6,6,6],
+  "Smith Machine Deadlift (heavy)":[6,6,6],
+  "Dumbbell Row (heavy)":[6,6,6],
   "Incline Treadmill Walk":[35],
+  "Treadmill Run":[25],
+  "Elliptical":[25],
+  "Stationary Bike":[25],
+  "Stair Climber":[15],
+  "Row Machine":[15],
   "Plank":[45,45,45],
   "Cable Crunch":[15,15,15],
   "Seated Leg Raise":[15,15,15],
   "Ab Machine":[15,15,15],
   "Russian Twist":[20,20,20],
-  "Dead Bug":[10,10,10]
+  "Dead Bug":[10,10,10],
+  "Hanging Knee Raise":[12,12,12],
+  "Bicycle Crunch":[20,20,20]
 };
 
 // Built-in technique tips
@@ -322,6 +412,23 @@ TIPS["Cable Fly"]=["Set pulleys at chest height. Step forward to create tension.
 TIPS["Pec Deck"]=["Adjust seat so handles are at chest height. Keep slight bend in elbows throughout.","Bring pads together in front of chest, squeezing pecs at full contraction.","Control the return — stop when you feel a stretch, don't overextend behind the shoulder line.","Keep shoulders down and back, chest proud. Don't let shoulders roll forward."];
 TIPS["Assisted Pull-Up"]=["Set counterweight — higher weight means more assistance. Grip bar slightly wider than shoulders.","Pull until chin clears the bar, driving elbows down and back.","Lower with control over 2-3 seconds. The negative is where you build strength to do unassisted pull-ups.","As you get stronger, reduce the counterweight gradually. Track your progress."];
 TIPS["Cable Curl"]=["Stand facing low pulley, grip the bar underhand. Pin elbows to sides.","Curl up to shoulder height, squeezing bicep at the top.","Lower under control — the cable provides constant tension unlike dumbbells.","Keep torso still. No swinging or leaning back."];
+TIPS["Smith Machine Bench Press"]=["Position bench so bar path aligns with mid-chest. Grip slightly wider than shoulder-width.","Unrack and lower to chest with control. Keep elbows at 45 degrees, not flared out.","The fixed bar path takes out stabilizers — good for isolating chest, but use free weights too for balance.","Don't bounce off chest. Touch and press with control."];
+TIPS["Smith Machine Bench Press (heavy)"]=["Same form as regular Smith bench. On heavy days, focus on controlled reps, not ego weight.","Have safety stops set just below chest level in case you fail a rep.","5-6 heavy reps is ideal. Rest 2-3 minutes between sets for full recovery.","The Smith machine is safer for heavy pressing without a spotter."];
+TIPS["Smith Machine Deadlift"]=["Stand with bar over mid-foot. Hinge at hips, grip bar just outside knees.","Drive through heels, keeping bar close to legs. Stand tall at top, squeeze glutes.","The fixed path means less stabilizer work — focus on hamstrings and glutes.","Keep back flat throughout. If lower back rounds, reduce weight."];
+TIPS["Smith Machine Deadlift (heavy)"]=["Same form as regular Smith deadlift. Heavy days mean fewer reps with full recovery.","Set safety stops at knee height in case you need to bail.","5-6 reps heavy. This builds serious posterior chain strength.","The Smith machine lets you focus on the pull without balance concerns."];
+TIPS["Dumbbell Bench Press"]=["Lie flat on bench, dumbbells at chest level, palms facing forward. Feet flat on floor.","Press up and slightly inward, bringing dumbbells together at the top without clashing.","Lower slowly with elbows at 45 degrees — not flared out to 90. Stop when elbows are level with the bench.","Great alternative when chest press machine is busy. Works stabilizers more than the machine."];
+TIPS["Dumbbell Shoulder Press"]=["Sit with back supported, dumbbells at shoulder height, palms forward. Keep core tight.","Press straight up, bringing dumbbells together at the top. Don't lock out fully.","Lower until elbows are at 90 degrees. Going lower puts strain on the rotator cuff.","Good alternative to shoulder press machine. Use lighter weight than machine since stabilizers work harder."];
+TIPS["Tricep Dips (Assisted)"]=["Use the assisted dip machine. Higher weight = more assistance. Grip parallel bars.","Lower until elbows hit 90 degrees — no deeper to protect shoulders. Lean slightly forward for chest, stay upright for triceps.","Press up to full extension, squeezing triceps at the top.","Great compound tricep movement. Reduce assistance as you get stronger."];
+TIPS["Dumbbell Row"]=["Place one knee and hand on bench, other foot on floor. Back flat, dumbbell hanging straight down.","Pull dumbbell to hip, driving elbow straight back. Squeeze shoulder blade at top.","Lower under control. Keep core tight — don't rotate the torso.","Great alternative when machine row or cable row is busy. Works each side independently."];
+TIPS["Dumbbell Row (heavy)"]=["Same form as regular dumbbell row. Use straps if grip gives out before back.","6-8 reps heavy. Drive elbow back explosively, lower slowly over 2-3 seconds.","Rest 2 minutes between sets. This builds serious back thickness.","Focus on squeezing the lat at the top, not just moving the weight."];
+TIPS["Reverse Fly Machine"]=["Sit facing the pad, grip handles at shoulder height. Keep slight bend in elbows.","Pull handles back in a wide arc, squeezing shoulder blades together at the back.","Control the return — don't let weights slam together. Constant tension throughout.","Great for rear delts and posture. Alternative to face pulls when cable is busy."];
+TIPS["Straight Arm Pulldown"]=["Face cable machine, grab bar with straight arms at shoulder height. Step back to create tension.","Push bar down in an arc to your thighs, keeping arms straight throughout. Squeeze lats at bottom.","Control the return, letting lats stretch fully at the top.","Isolates lats without bicep involvement. Good warm-up or alternative to lat pulldown."];
+TIPS["Dumbbell Leg Curl"]=["Lie face down on flat bench, dumbbell held between feet. Knees just off the edge.","Curl weight up by bending knees, squeezing hamstrings at the top.","Lower slowly over 3 seconds. Don't let the weight drop.","Great alternative when leg curl machine is busy. Lighter weight works well here."];
+TIPS["Hip Adductor Machine"]=["Sit with back against pad, legs spread on the pads. Adjust width to a comfortable stretch.","Squeeze legs together in a controlled motion, focusing on inner thighs.","Return slowly to starting position. Don't let weights slam.","Balances the abductor work. Good for hip stability and injury prevention."];
+TIPS["Smith Machine Squat"]=["Position bar on upper traps, feet slightly forward of the bar. This is different from free squat stance.","Lower until thighs are parallel — don't go deeper on Smith due to fixed bar path.","Drive up through heels, squeezing glutes at top. Don't lock knees.","Alternative to leg press. The fixed path reduces stabilizer demand but limits natural movement."];
+TIPS["Glute Kickback Machine"]=["Place one foot on platform, other on the kickback pad. Hold handles for stability.","Push the pad back and up, squeezing glute at full extension. Don't hyperextend lower back.","Return slowly under control. Focus on glute, not lower back.","Great glute isolation. Alternative to hip extension movements."];
+TIPS["Hanging Knee Raise"]=["Hang from pull-up bar or use captain's chair. Let body stabilize before starting.","Raise knees to chest by curling pelvis up, not just lifting legs. Round lower back at top.","Lower slowly — don't swing. If you swing, you're using momentum not abs.","Advanced core exercise. If too hard, use captain's chair with back support."];
+TIPS["Bicycle Crunch"]=["Lie on back, hands behind head, knees bent. Lift shoulders off ground.","Bring right elbow to left knee while extending right leg. Alternate sides in pedaling motion.","Keep lower back pressed to floor throughout. Don't pull on neck.","Control the movement — slow bicycles beat fast ones for core activation."];
 
 var defaultTip=["Set up properly before each rep — adjust the machine to fit your body, not the other way around.","Focus on the target muscle. Slow controlled reps beat heavy sloppy reps every time.","Control the lowering phase over 2-3 seconds. This eccentric phase builds more muscle than the lifting phase.","If you feel joint pain rather than muscle burn, stop immediately. Distinguish productive discomfort from injury signals."];
 
@@ -340,7 +447,7 @@ function stripStar(name){return name?name.replace(/^★ /,""):name;}
 function saveHistory(name,sets){var h=getHistory();h[stripStar(name)]=sets.map(function(s){return{weight:String(s.weight||""),reps:String(s.reps||"")};});saveLocal(HISTORY_KEY,h);}
 function persist(){saveLocal(STORAGE_KEY,rows);}
 
-// Volume tracking
+// Volume tracking - stores last 2 sessions per exercise
 function getVolumeHistory(){return loadLocal(VOLUME_KEY,{});}
 function calcVolume(sets){
   var vol=0;
@@ -354,35 +461,22 @@ function calcVolume(sets){
 function saveVolume(name,vol){
   var h=getVolumeHistory();
   var clean=stripStar(name);
-  var prev=h[clean]||null;
-  h[clean]=vol;
+  var entry=h[clean]||{current:null,previous:null};
+  // Shift current to previous, store new as current
+  entry.previous=entry.current;
+  entry.current=vol;
+  h[clean]=entry;
   saveLocal(VOLUME_KEY,h);
-  return prev;
 }
-function showVolumeToast(name,current,previous){
-  var toast=document.getElementById("volumeToast");
-  var diff=previous!==null?(current-previous):0;
-  var pct=previous>0?Math.round((diff/previous)*100):0;
-  var arrow="",color="#888";
-  if(previous===null){
-    arrow="●";color="#888";
-  }else if(diff>0){
-    arrow="▲";color="#3DBF7F";
-  }else if(diff<0){
-    arrow="▼";color="#E05C5C";
-  }else{
-    arrow="=";color="#888";
-  }
-  var msg='<span style="color:'+color+'">'+arrow+'</span> <strong>'+current.toLocaleString()+' lbs</strong>';
-  if(previous!==null&&diff!==0){
-    msg+=' <span style="color:'+color+';font-size:11px">'+(diff>0?"+":"")+diff.toLocaleString()+' ('+(diff>0?"+":"")+pct+'%)</span>';
-  }else if(previous===null){
-    msg+=' <span style="color:#888;font-size:11px">First time!</span>';
-  }
-  toast.innerHTML=msg;
-  toast.style.display="block";
-  toast.style.opacity="1";
-  setTimeout(function(){toast.style.opacity="0";setTimeout(function(){toast.style.display="none";},300);},3500);
+function getVolumeComparison(name){
+  var h=getVolumeHistory();
+  var clean=stripStar(name);
+  return h[clean]||{current:null,previous:null};
+}
+function getVolumeComparison(name){
+  var h=getVolumeHistory();
+  var clean=stripStar(name);
+  return h[clean]||{current:null,previous:null};
 }
 
 function getDefaultSets(name){
@@ -521,7 +615,7 @@ function buildCard(row,idx){
       html+='<div class="target-badge">Target: <span>'+escHtml(target)+'</span></div>';
     }
     html+='<div class="rest-row"><span class="field-label">Rest</span><div class="rest-btns">';
-    var restOpts=[["1m",60],["90s",90],["2m",120],["3m",180]];
+    var restOpts=[["30s",30],["1m",60],["90s",90],["3m",180]];
     for(var ri=0;ri<restOpts.length;ri++){
       html+='<button class="rest-btn" style="background:'+(isTimerRow?color:"#1a1a1f")+';border-color:'+color+'77;color:'+(isTimerRow?"#fff":color)+'"'
         +' data-secs="'+restOpts[ri][1]+'" data-label="'+escHtml(displayName||"Exercise")+'" data-rowid="'+row.id+'" onclick="onRestBtn(this)">'+restOpts[ri][0]+'</button>';
@@ -530,7 +624,48 @@ function buildCard(row,idx){
       +'<div class="sets-wrap">'+setsHtml+'</div>';
   }
 
-  html+='<input class="notes-input" placeholder="Notes (optional)..." value="'+escHtml(row.notes)+'" data-rowid="'+row.id+'" data-field="notes" oninput="onSelect(this)"/>'
+  // Build volume comparison display
+  var volHtml="";
+  if(hasEx){
+    var volComp=getVolumeComparison(row.exercise==="__custom__"?row.customExercise:row.exercise);
+    var currentVol=calcVolume(row.sets);
+    var prevVol=volComp.current; // last saved session
+    var prev2Vol=volComp.previous; // session before that
+    
+    if(prevVol!==null||currentVol>0){
+      var diff=prevVol!==null?(currentVol-prevVol):0;
+      var pct=prevVol>0?Math.round((diff/prevVol)*100):0;
+      var arrow="",volColor="#777";
+      if(prevVol===null){
+        arrow="●";volColor="#777";
+      }else if(diff>0){
+        arrow="▲";volColor="#3DBF7F";
+      }else if(diff<0){
+        arrow="▼";volColor="#E05C5C";
+      }else{
+        arrow="=";volColor="#777";
+      }
+      volHtml='<div class="vol-compare" style="color:'+volColor+'">';
+      volHtml+='<span class="vol-arrow">'+arrow+'</span> ';
+      volHtml+='<strong style="color:#fff">'+currentVol.toLocaleString()+'</strong> lbs';
+      if(prevVol!==null&&diff!==0){
+        volHtml+=' <span style="font-size:10px">'+(diff>0?"+":"")+diff.toLocaleString()+' ('+(diff>0?"+":"")+pct+'%)</span>';
+      }else if(prevVol===null&&currentVol>0){
+        volHtml+=' <span style="font-size:10px">New exercise</span>';
+      }
+      // Show previous session comparison
+      if(prevVol!==null){
+        volHtml+='<span class="vol-prev">Last: '+prevVol.toLocaleString()+'</span>';
+      }
+      if(prev2Vol!==null){
+        volHtml+='<span class="vol-prev">Before: '+prev2Vol.toLocaleString()+'</span>';
+      }
+      volHtml+='</div>';
+    }
+  }
+
+  html+='<input class="notes-input" placeholder="Notes (optional)..." value="'+escHtml(row.notes)+'" data-rowid="'+row.id+'" data-field="notes" onchange="onNotesChange(this)" onblur="onNotesChange(this)"/>'
+    +volHtml
     +'</div>';
 
   card.innerHTML=html;
@@ -553,17 +688,27 @@ function onSelect(el){
   for(var i=0;i<rows.length;i++){if(rows[i].id===rowId){row=rows[i];break;}}
   if(!row) return;
   if(field==="group"){
-    row.group=value;row.exercise="";row.customExercise="";
+    row.group=value;row.exercise="";row.customExercise="";row.notes="";
     var arr=[];
     for(var j=0;j<MAX_SETS;j++){arr.push({weight:"",reps:"",done:false});}
     row.sets=arr;
   } else if(field==="exercise"&&value&&value!=="__custom__"){
     row.exercise=value;
     row.sets=getDefaultSets(value);
+    row.notes="";
   } else {
     row[field]=value;
   }
   row.synced=false;persist();rerenderCard(rowId);updateFooter();
+}
+
+function onNotesChange(el){
+  var rowId=el.dataset.rowid,value=el.value;
+  var row=null;
+  for(var i=0;i<rows.length;i++){if(rows[i].id===rowId){row=rows[i];break;}}
+  if(!row) return;
+  row.notes=value;
+  row.synced=false;persist();updateFooter();
 }
 
 function onSetInput(el){
@@ -631,8 +776,8 @@ function onDoneBtn(el){
   // Show volume toast when all sets are done
   if(allDone&&name&&s.done){
     var currentVol=calcVolume(row.sets);
-    var prevVol=saveVolume(name,currentVol);
-    showVolumeToast(name,currentVol,prevVol);
+    saveVolume(name,currentVol);
+    rerenderCard(rowId); // Rerender to update volume comparison display
   }
   updateFooter();
 }
@@ -674,6 +819,7 @@ function handleSync(){
   if(!unsynced.length){btn.textContent="Nothing new";setTimeout(function(){btn.textContent="Save to Sheets";updateFooter();},2500);return;}
   btn.textContent="Saving...";btn.disabled=true;
   var values=[];
+  var todayDate=getTodayDate(); // Use today's date for all exercises being synced
   for(var j=0;j<unsynced.length;j++){
     var u=unsynced[j];
     // Calculate volume (sum of weight × reps for all sets)
@@ -684,7 +830,7 @@ function handleSync(){
       volume+=w*r;
     }
     values.push([
-      u.date,u.day,u.group,u.exercise==="__custom__"?u.customExercise:stripStar(u.exercise),
+      todayDate,u.day,u.group,u.exercise==="__custom__"?u.customExercise:stripStar(u.exercise),
       u.sets[0]?u.sets[0].weight||"":"",u.sets[0]?u.sets[0].reps||"":"",
       u.sets[1]?u.sets[1].weight||"":"",u.sets[1]?u.sets[1].reps||"":"",
       u.sets[2]?u.sets[2].weight||"":"",u.sets[2]?u.sets[2].reps||"":"",
@@ -712,25 +858,87 @@ function handleSync(){
 // ── TIMER ─────────────────────────────────────────────────
 function startTimer(secs,label,rowId){
   clearInterval(timerInterval);
-  timerRemaining=secs;timerTotal=secs;activeTimerRowId=rowId;
+  timerRemaining=secs;timerTotal=secs;activeTimerRowId=rowId;timerLabel=label;
   document.getElementById("timerLabel").textContent=label;
-  document.getElementById("timerOverlay").style.display="flex";
+  document.getElementById("miniTimerLabel").textContent=label;
+  // Start minimized by default
+  document.getElementById("miniTimer").style.display="flex";
+  document.getElementById("timerOverlay").style.display="none";
   tick();
-  timerInterval=setInterval(function(){timerRemaining--;if(timerRemaining<=0){timerRemaining=0;clearInterval(timerInterval);}tick();},1000);
+  timerInterval=setInterval(function(){
+    timerRemaining--;
+    if(timerRemaining<=0){
+      timerRemaining=0;
+      clearInterval(timerInterval);
+      onTimerComplete();
+    }
+    tick();
+  },1000);
   rerenderCard(rowId);
 }
+var timerLabel="";
+
 function tick(){
   var min=Math.floor(timerRemaining/60),sec=timerRemaining%60;
-  document.getElementById("timerText").textContent=min+":"+(sec<10?"0":"")+sec;
+  var timeStr=min+":"+(sec<10?"0":"")+sec;
+  document.getElementById("timerText").textContent=timeStr;
+  document.getElementById("miniTimerTime").textContent=timeStr;
   var pct=timerTotal>0?timerRemaining/timerTotal:0;
   var circ=2*Math.PI*60;
   document.getElementById("timerArc").setAttribute("stroke-dashoffset",circ*(1-pct));
-  document.getElementById("timerArc").setAttribute("stroke",pct>0.4?"#3DBF7F":pct>0.15?"#F5A623":"#E05C5C");
+  var color=pct>0.4?"#3DBF7F":pct>0.15?"#F5A623":"#E05C5C";
+  document.getElementById("timerArc").setAttribute("stroke",color);
   document.getElementById("timerSub").textContent=timerRemaining===0?"REST DONE":"RESTING";
+  // Update mini-timer progress bar
+  document.getElementById("miniTimerProgress").style.width=(pct*100)+"%";
+  // Update mini-timer color state
+  var mini=document.getElementById("miniTimer");
+  if(pct<=0.15&&pct>0){mini.classList.add("ending");}else{mini.classList.remove("ending");}
 }
+
+function onTimerComplete(){
+  // Vibrate
+  if(navigator.vibrate){navigator.vibrate([200,100,200,100,200]);}
+  // Play chime sound
+  playChime();
+  // Visual feedback
+  var mini=document.getElementById("miniTimer");
+  mini.classList.add("done");
+  setTimeout(function(){mini.classList.remove("done");},1000);
+  // Update label
+  document.getElementById("miniTimerLabel").textContent="REST DONE — Tap to dismiss";
+  document.getElementById("timerSub").textContent="REST DONE";
+}
+
+function playChime(){
+  try{
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var osc=ctx.createOscillator();
+    var gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.type="sine";
+    // Play a pleasant two-tone chime
+    osc.frequency.setValueAtTime(880,ctx.currentTime);
+    osc.frequency.setValueAtTime(1100,ctx.currentTime+0.15);
+    gain.gain.setValueAtTime(0.3,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime+0.4);
+  }catch(e){}
+}
+
+function expandTimer(){
+  document.getElementById("timerOverlay").style.display="flex";
+}
+
+function minimizeTimer(){
+  document.getElementById("timerOverlay").style.display="none";
+}
+
 function cancelTimer(){
   clearInterval(timerInterval);
   document.getElementById("timerOverlay").style.display="none";
+  document.getElementById("miniTimer").style.display="none";
   if(activeTimerRowId){rerenderCard(activeTimerRowId);activeTimerRowId=null;}
 }
 
@@ -786,19 +994,36 @@ function openTip(exName,group){
     "Hip Abductor Machine":"https://www.youtube.com/watch?v=FEczajJmwEo",
     "Goblet Squat":"https://www.youtube.com/watch?v=MeIiIdhvXT4",
     "Step Up":"https://www.youtube.com/watch?v=dQqApCGd5Ss",
+    "Smith Machine Deadlift":"https://www.youtube.com/watch?v=Z3CKPC2Nfas",
+    "Smith Machine Deadlift (heavy)":"https://www.youtube.com/watch?v=Z3CKPC2Nfas",
     // Upper Strength
     "Chest Press Machine (heavy)":"https://www.youtube.com/watch?v=xUm0BiZCWlQ",
     "Shoulder Press Machine (heavy)":"https://www.youtube.com/watch?v=Wqq43dKW1TU",
     "Tricep Pushdown":"https://www.youtube.com/watch?v=2-LAMcpzODU",
     "Overhead Press":"https://www.youtube.com/watch?v=_RlRDWO2jfg",
     "Barbell Row":"https://www.youtube.com/watch?v=FWJR5Ve8bnQ",
+    "Smith Machine Bench Press":"https://www.youtube.com/watch?v=EkSBC2JdMhU",
+    "Smith Machine Bench Press (heavy)":"https://www.youtube.com/watch?v=EkSBC2JdMhU",
+    "Dumbbell Bench Press":"https://www.youtube.com/watch?v=VmB1G1K7v94",
+    "Dumbbell Shoulder Press":"https://www.youtube.com/watch?v=qEwKCR5JCog",
+    "Tricep Dips (Assisted)":"https://www.youtube.com/watch?v=Otr2Z7mnzAs",
+    "Dumbbell Row":"https://www.youtube.com/watch?v=pYcpY20QaE8",
+    "Dumbbell Row (heavy)":"https://www.youtube.com/watch?v=pYcpY20QaE8",
+    "Reverse Fly Machine":"https://www.youtube.com/watch?v=5YK4bgzXDp0",
+    "Straight Arm Pulldown":"https://www.youtube.com/watch?v=AjCCGN2tU3Q",
+    "Dumbbell Leg Curl":"https://www.youtube.com/watch?v=Orxowest56U",
+    "Hip Adductor Machine":"https://www.youtube.com/watch?v=w0zcLh1paCo",
+    "Smith Machine Squat":"https://www.youtube.com/watch?v=IGMh00mWJDI",
+    "Glute Kickback Machine":"https://www.youtube.com/watch?v=6kALZikXxLc",
     // Core
     "Plank":"https://www.youtube.com/watch?v=ASdvN_XEl_c",
     "Cable Crunch":"https://www.youtube.com/watch?v=AV5PmZJIrrw",
     "Seated Leg Raise":"https://www.youtube.com/watch?v=l4kQd9eWclE",
     "Ab Machine":"https://www.youtube.com/watch?v=m4ytaCJZpl0",
     "Russian Twist":"https://www.youtube.com/watch?v=wkD8rjkodUI",
-    "Dead Bug":"https://www.youtube.com/watch?v=I5xbsA71v1A"
+    "Dead Bug":"https://www.youtube.com/watch?v=I5xbsA71v1A",
+    "Hanging Knee Raise":"https://www.youtube.com/watch?v=Pr1ieGZ5atk",
+    "Bicycle Crunch":"https://www.youtube.com/watch?v=9FGilxCbdz8"
   };
   
   var videoUrl=VIDEO_MAP[cleanName];
@@ -810,7 +1035,7 @@ function openTip(exName,group){
   bodyEl.innerHTML='<div class="tip-emoji">'+emoji+'</div><div class="tip-content">'+linesHtml+ytLink+'</div>';
 }
 function closeTip(){document.getElementById("tipOverlay").style.display="none";}
-document.addEventListener("keydown",function(e){if(e.key==="Escape"){cancelTimer();closeTip();}});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){minimizeTimer();closeTip();}});
 
 try{init();}catch(err){document.getElementById("rowList").innerHTML='<div style="color:#E05C5C;padding:20px;font-size:13px">Error: '+err.message+'</div>';}
 </script>
