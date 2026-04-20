@@ -437,7 +437,13 @@ var rows=[];
 var timerInterval=null,timerRemaining=0,timerTotal=0,activeTimerRowId=null;
 
 // ── HELPERS ────────────────────────────────────────────────
-function getTodayDate(){return new Date().toISOString().split("T")[0];}
+function getTodayDate(){
+  var d=new Date();
+  var year=d.getFullYear();
+  var month=String(d.getMonth()+1).padStart(2,"0");
+  var day=String(d.getDate()).padStart(2,"0");
+  return year+"-"+month+"-"+day;
+}
 function getTodayDay(){return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()];}
 function uid(){return "r"+Date.now()+Math.floor(Math.random()*99999);}
 function loadLocal(k,d){try{var v=localStorage.getItem(k);return v!=null?JSON.parse(v):d;}catch(e){return d;}}
@@ -632,9 +638,9 @@ function buildCard(row,idx){
   var volHtml="";
   if(hasEx){
     var volComp=getVolumeComparison(row.exercise==="__custom__"?row.customExercise:row.exercise);
-    var currentVol=calcVolume(row.sets);
-    var prevVol=volComp.current; // last saved session
-    var prev2Vol=volComp.previous; // session before that
+    var currentVol=calcVolume(row.sets)||0;
+    var prevVol=(volComp&&typeof volComp.current==="number")?volComp.current:null;
+    var prev2Vol=(volComp&&typeof volComp.previous==="number")?volComp.previous:null;
     
     if(prevVol!==null||currentVol>0){
       var diff=prevVol!==null?(currentVol-prevVol):0;
@@ -651,18 +657,18 @@ function buildCard(row,idx){
       }
       volHtml='<div class="vol-compare" style="color:'+volColor+'">';
       volHtml+='<span class="vol-arrow">'+arrow+'</span> ';
-      volHtml+='<strong style="color:#fff">'+currentVol.toLocaleString()+'</strong> lbs';
+      volHtml+='<strong style="color:#fff">'+(currentVol||0).toLocaleString()+'</strong> lbs';
       if(prevVol!==null&&diff!==0){
-        volHtml+=' <span style="font-size:10px">'+(diff>0?"+":"")+diff.toLocaleString()+' ('+(diff>0?"+":"")+pct+'%)</span>';
+        volHtml+=' <span style="font-size:10px">'+(diff>0?"+":"")+(diff||0).toLocaleString()+' ('+(diff>0?"+":"")+pct+'%)</span>';
       }else if(prevVol===null&&currentVol>0){
         volHtml+=' <span style="font-size:10px">New exercise</span>';
       }
       // Show previous session comparison
       if(prevVol!==null){
-        volHtml+='<span class="vol-prev">Last: '+prevVol.toLocaleString()+'</span>';
+        volHtml+='<span class="vol-prev">Last: '+(prevVol||0).toLocaleString()+'</span>';
       }
       if(prev2Vol!==null){
-        volHtml+='<span class="vol-prev">Before: '+prev2Vol.toLocaleString()+'</span>';
+        volHtml+='<span class="vol-prev">Before: '+(prev2Vol||0).toLocaleString()+'</span>';
       }
       volHtml+='</div>';
     }
