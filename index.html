@@ -61,9 +61,18 @@
 
     /* EXERCISE SEQUENCE */
     .seq-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:2px 0}
-    .seq-item{font-size:10px;padding:3px 8px;border-radius:12px;border:1px solid var(--border2);color:var(--text3);white-space:nowrap}
-    .seq-item.current{border-color:currentColor;font-weight:700;background:rgba(255,255,255,0.05)}
+    .seq-item{font-size:10px;padding:4px 9px;border-radius:12px;border:1px solid var(--border2);color:var(--text3);white-space:nowrap;cursor:pointer;transition:all 0.15s;-webkit-user-select:none;user-select:none}
+    .seq-item:active{opacity:0.7;transform:scale(0.95)}
+    .seq-item.current{font-weight:700;background:rgba(255,255,255,0.07)}
+    .seq-item.custom-chip{border-style:dashed}
     .seq-num{font-size:9px;opacity:0.6;margin-right:2px}
+    .prev-hint{font-size:9px;color:var(--text3);padding:0 0 3px;font-style:italic}
+    .prev-hint span{color:var(--warn)}
+    .cal-bar{display:flex;align-items:center;justify-content:space-between;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:6px 12px;margin:0 10px 4px}
+    .cal-total{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--warn)}
+    .cal-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+    .cal-sub{font-size:9px;color:var(--text3);text-align:right}
+    .form-cue{font-size:10px;color:var(--text3);border-left:2px solid var(--info);padding:3px 8px;font-style:italic;line-height:1.4}
 
     /* TARGET — white and prominent */
     .target-row{font-size:11px;color:#fff;font-weight:600;letter-spacing:0.5px;padding:2px 0}
@@ -115,6 +124,14 @@
     .tip-line{display:flex;gap:8px;font-size:13px;color:#ccc;line-height:1.55}
     .tip-bullet{color:var(--info);font-weight:700;flex-shrink:0;font-size:14px}
     .vid-btn{display:block;margin:10px 14px 14px;background:#1a1a2e;border:1px solid var(--info);border-radius:8px;color:var(--info);font-size:12px;font-weight:700;padding:10px;text-align:center;text-decoration:none;letter-spacing:0.5px}
+  /* TIMER BAR — bottom strip, no popup */
+  #timerBar{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:3px solid var(--warn);padding:8px 14px 12px;z-index:101;animation:fadeIn 0.2s ease}
+  .tbar-top{display:flex;align-items:center;gap:10px}
+  .tbar-lbl{flex:1;font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.5px}
+  .tbar-time{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:3px;line-height:1;min-width:66px;text-align:right;transition:color 0.3s}
+  .tbar-skip{background:none;border:1px solid var(--border2);color:var(--text2);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;flex-shrink:0}
+  .tbar-prog{height:4px;background:var(--border);border-radius:2px;margin-top:7px;overflow:hidden}
+  .tbar-fill{height:100%;border-radius:2px;transition:width 1s linear,background 0.5s}
   </style>
 </head>
 <body>
@@ -124,26 +141,24 @@
     <div class="date-badge"><div class="date-num" id="dateNum"></div><div class="date-mon" id="dateMon"></div></div>
   </div>
   <div class="day-pill" id="dayPill"></div>
-  <div class="row-list" id="rowList"></div>
+  <div class="cal-bar" id="calBar">
+  <div><div class="cal-total" id="calTotal">~0 cal</div><div class="cal-label">Est. burned today</div></div>
+  <div class="cal-sub" id="calSub">Add exercises</div>
+</div>
+<div class="row-list" id="rowList"></div>
   <button class="add-btn" onclick="addRow()">+ ADD EXERCISE</button>
 </div>
-<div class="sync-footer">
+<div class="sync-footer" id="syncFooter">
   <div class="sync-info" id="syncInfo"></div>
   <button class="sync-btn" id="syncBtn" onclick="handleSync()">Save to Sheets</button>
 </div>
-<div class="overlay" id="timerOverlay" style="display:none" onclick="cancelTimer()">
-  <div class="timer-box" onclick="event.stopPropagation()">
-    <div class="timer-lbl" id="timerLabel"></div>
-    <svg width="130" height="130" viewBox="0 0 130 130">
-      <circle cx="65" cy="65" r="55" fill="none" stroke="#1e1e24" stroke-width="8"/>
-      <circle id="timerArc" cx="65" cy="65" r="55" fill="none" stroke="#3DBF7F" stroke-width="8"
-        stroke-dasharray="345.4" stroke-dashoffset="0" stroke-linecap="round"
-        style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s linear,stroke 0.5s"/>
-      <text x="65" y="72" text-anchor="middle" fill="white" font-size="30" font-family="Bebas Neue" letter-spacing="2" id="timerText">0:00</text>
-    </svg>
-    <div class="timer-sub" id="timerSub">RESTING</div>
-    <button class="timer-dismiss" onclick="cancelTimer()">DISMISS</button>
+<div id="timerBar" style="display:none">
+  <div class="tbar-top">
+    <span class="tbar-lbl" id="tbarLabel">REST</span>
+    <span class="tbar-time" id="tbarTime">1:00</span>
+    <button class="tbar-skip" onclick="cancelTimer()">SKIP</button>
   </div>
+  <div class="tbar-prog"><div class="tbar-fill" id="tbarFill" style="width:100%;background:var(--warn)"></div></div>
 </div>
 <div class="overlay" id="tipOverlay" style="display:none" onclick="closeTip()">
   <div class="tip-box" onclick="event.stopPropagation()">
@@ -160,6 +175,13 @@ const MAX_SETS=4;
 const GROUP_OPTIONS=["Push","Pull","Legs","Cardio","Core"];
 const GROUP_COLORS={Push:"#4F8EF7",Pull:"#E05C5C",Legs:"#F5A623",Cardio:"#3DBF7F",Core:"#3DBF7F"};
 const GROUP_EMOJI={Push:"💪",Pull:"🏋️",Legs:"🦵",Cardio:"🏃",Core:"🎯"};
+
+// MET values for calorie estimation (Jeff = 218 lbs / 99 kg)
+var JEFF_KG=99;
+var MET={"Chest Press Machine":5.0,"Pec Deck":4.0,"Cable Fly":4.0,"Lateral Raise (Dumbbells)":3.5,"Rear Delt Machine":3.5,"Machine Row":5.5,"Lat Pulldown (Neutral Grip)":5.0,"Seated Cable Row (Neutral Grip)":5.0,"Straight Arm Pulldown":4.5,"Face Pulls (Cable)":3.5,"Leg Press":6.0,"Romanian Deadlift (Dumbbells)":6.0,"Leg Curl Machine":4.5,"Leg Extension Machine":4.5,"Calf Raise Machine":3.5,"Hip Abductor Machine":3.0,"Plank":3.5,"Cable Crunch":3.5,"Seated Leg Raise":3.5,"Ab Machine":3.5,"Russian Twist":4.0,"Dead Bug":3.0,"Incline Treadmill Walk":7.5};
+function calcExCal(exName,numSets){var met=MET[exName]||4.0;return Math.round(met*JEFF_KG*(1.83/60)*numSets);}
+function calcSessionCal(){var t=0;var today=getTodayDate();for(var i=0;i<rows.length;i++){var r=rows[i];if(r.date!==today)continue;var nm=r.exercise==="__custom__"?r.customExercise:r.exercise;if(nm)t+=calcExCal(nm,r.sets.length);}return t;}
+function updateCalBar(){var b=document.getElementById("calBar");if(!b)return;var c=calcSessionCal();document.getElementById("calTotal").textContent="~"+c+" cal";document.getElementById("calSub").textContent=c>300?"Great burn!":c>150?"Keep going!":"Add exercises";}
 
 // Fat-loss focused plan — compound-heavy, joint-safe, metabolic
 const EXERCISE_MAP={
@@ -284,7 +306,7 @@ var rows=[];
 var timerInterval=null,timerRemaining=0,timerTotal=0,activeTimerRowId=null;
 
 // ── HELPERS ────────────────────────────────────────────────
-function getTodayDate(){return new Date().toISOString().split("T")[0];}
+function getTodayDate(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
 function getTodayDay(){return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()];}
 function uid(){return "r"+Date.now()+Math.floor(Math.random()*99999);}
 function loadLocal(k,d){try{var v=localStorage.getItem(k);return v!=null?JSON.parse(v):d;}catch(e){return d;}}
@@ -325,7 +347,7 @@ function init(){
   document.getElementById("dayPill").textContent=getTodayDay().toUpperCase()+" - "+getTodayDate();
   var saved=loadLocal(STORAGE_KEY,[]);
   rows=saved.length?saved:[emptyRow()];
-  renderAll();updateFooter();
+  renderAll();updateFooter();updateCalBar();
 }
 
 // ── BUILD CARD ─────────────────────────────────────────────
@@ -337,15 +359,41 @@ function buildCard(row,idx){
   var isTimerRow=activeTimerRowId===row.id;
   var target=TARGETS[row.exercise]||"";
 
-  // Build sequence display
+  // Build tappable sequence chips
   var seqHtml="";
   if(row.group&&EXERCISE_MAP[row.group]){
     var exList=EXERCISE_MAP[row.group];
     var seqItems=exList.map(function(ex,i){
       var isCurrent=ex===row.exercise;
-      return '<span class="seq-item'+(isCurrent?" current":"") +'" style="'+(isCurrent?"color:"+color+";border-color:"+color:"")+'"><span class="seq-num">'+(i+1)+'</span>'+eh(ex)+'</span>';
+      return '<span class="seq-item'+(isCurrent?" current":"")
+        +'" style="'+(isCurrent?"color:"+color+";border-color:"+color+";background:"+color+"18":"")+'"'
+        +' data-rowid="'+row.id+'" data-ex="'+eh(ex)+'" onclick="onSeqTap(this)">'
+        +'<span class="seq-num">'+(i+1)+'</span>'+eh(ex)+'</span>';
     }).join("");
+    // Add custom chip at end
+    seqItems+='<span class="seq-item custom-chip" style="color:var(--text3)" data-rowid="'+row.id+'" data-ex="__custom__" onclick="onSeqTap(this)">+ Custom</span>';
     seqHtml='<div class="seq-wrap">'+seqItems+'</div>';
+  }
+
+  // Progressive overload hint from history
+  var prevHint="";
+  if(row.exercise&&row.exercise!=="__custom__"){
+    var hist=getHistory();
+    if(hist[row.exercise]&&hist[row.exercise].length){
+      var p=hist[row.exercise][0];
+      var pw=parseFloat(p.weight||0),pr=parseInt(p.reps||0);
+      if(pw>0){
+        var nudgeW=pw+5;
+        prevHint='<div class="prev-hint">Prev: <span>'+pw+'lbs x '+pr+'</span> — try <span>'+nudgeW+'lbs today</span></div>';
+      }
+    }
+  }
+
+  // First form cue
+  var formCue="";
+  if(row.exercise&&row.exercise!=="__custom__"){
+    var tipArr=TIPS[row.exercise]||null;
+    if(tipArr&&tipArr[1]) formCue='<div class="form-cue">'+eh(tipArr[1].substring(0,90)+(tipArr[1].length>90?"...":""))+'</div>';
   }
 
   // Build sets rows (compact single-row layout)
@@ -380,22 +428,29 @@ function buildCard(row,idx){
     +'<option value="">Select</option>'
     +GROUP_OPTIONS.map(function(g){return'<option value="'+g+'"'+(row.group===g?" selected":"")+'>'+g+'</option>';}).join("")
     +'</select><span class="sel-arr" style="color:'+color+'">v</span></div></div>'
-    +'<div class="field-wrap"><div class="field-lbl">Exercise</div><div class="sel-wrap">'
-    +'<select data-rowid="'+row.id+'" data-field="exercise" onchange="onSelect(this)"'+(row.group?"":" disabled")+' style="color:'+(row.exercise?"#fff":"#555")+'">'
-    +'<option value="">'+(row.group?"Select":"Group first")+'</option>'
-    +(EXERCISE_MAP[row.group]||[]).map(function(ex){return'<option value="'+eh(ex)+'"'+(row.exercise===ex?" selected":"")+'>'+eh(ex)+'</option>';}).join("")
-    +'<option value="__custom__"'+(row.exercise==="__custom__"?" selected":"")+'>+ Custom</option>'
-    +'</select><span class="sel-arr" style="color:'+color+'">v</span></div>'
-    +(row.exercise==="__custom__"?'<input class="custom-inp" style="border-color:'+color+'66" placeholder="Exercise name..." value="'+eh(row.customExercise)+'" data-rowid="'+row.id+'" data-field="customExercise" oninput="onSelect(this)"/>':"")
-    +'</div>'
+    // Exercise dropdown hidden when group set (sequence chips handle selection)
+    +(row.group?"":'<div class="field-wrap"><div class="field-lbl">Exercise</div><div class="sel-wrap">'
+    +'<select disabled style="color:#555"><option>Select Group first</option></select>'
+    +'<span class="sel-arr">v</span></div></div>')
+    // Hidden select keeps data binding for custom exercise
+    +(row.exercise==="__custom__"?'<input class="custom-inp" style="border-color:'+color+'66;margin-top:4px" placeholder="Exercise name..." value="'+eh(row.customExercise)+'" data-rowid="'+row.id+'" data-field="customExercise" oninput="onSelect(this)"/>':"")
     +'</div>';  // end ge-row
+    // Hidden select to keep data binding
+    html+='<select data-rowid="'+row.id+'" data-field="exercise" onchange="onSelect(this)" style="display:none">'
+    +(EXERCISE_MAP[row.group]||[]).map(function(ex){return'<option value="'+eh(ex)+'"'+(row.exercise===ex?" selected":"")+'>'+eh(ex)+'</option>';}).join("")
+    +'<option value="__custom__"'+(row.exercise==="__custom__"?" selected":"")+'>custom</option>'
+    +'</select>';
 
   // Sequence map
   if(seqHtml) html+=seqHtml;
 
   if(hasEx){
+    // Prev overload nudge
+    if(prevHint) html+=prevHint;
     // Target in white
     if(target) html+='<div class="target-row"><span>&#9654;</span>'+eh(target)+'</div>';
+    // First form cue
+    if(formCue) html+=formCue;
 
     // Rest timer with fat-burn emphasis
     html+='<div class="rest-section">'
@@ -432,6 +487,21 @@ function rerenderCard(rowId){
 }
 
 // ── HANDLERS ──────────────────────────────────────────────
+function onSeqTap(el){
+  var rowId=el.dataset.rowid, ex=el.dataset.ex;
+  var row=rows.find(function(r){return r.id===rowId;});
+  if(!row) return;
+  if(ex==="__custom__"){
+    row.exercise="__custom__"; row.customExercise="";
+    row.sets=Array.from({length:MAX_SETS},function(){return{weight:"",reps:"",done:false};});
+  } else {
+    row.exercise=ex;
+    row.sets=getDefaultSets(ex);
+    row.buddy=getLastBuddy(ex);
+  }
+  row.synced=false; persist(); rerenderCard(rowId); updateFooter(); updateCalBar();
+}
+
 function onSelect(el){
   var rowId=el.dataset.rowid,field=el.dataset.field,value=el.value;
   var row=rows.find(function(r){return r.id===rowId;});
@@ -488,17 +558,26 @@ function onDoneBtn(el){
   btn.textContent=s.done?"DONE":"TAP DONE";
   var pill=document.getElementById("pp-"+rowId);
   if(pill){pill.textContent=row.sets.filter(function(x){return x.done;}).length+"/"+row.sets.length;}
+  // Auto-start 60s rest timer when marking a set as DONE (not when undoing)
+  if(s.done){
+    var exName=row.exercise==="__custom__"?row.customExercise:row.exercise;
+    var setLabel=(exName||"Exercise")+" — Set "+(si+1)+" done";
+    startTimer(60,setLabel,rowId);
+  } else {
+    // Undoing a set — cancel any running timer for this row
+    if(activeTimerRowId===rowId) cancelTimer();
+  }
   updateFooter();
 }
 
 function onRemove(el){
   if(rows.length<=1) return;
   rows=rows.filter(function(r){return r.id!==el.dataset.rowid;});
-  persist();renderAll();updateFooter();
+  persist();renderAll();updateFooter();updateCalBar();
 }
 function onRestBtn(el){startTimer(parseInt(el.dataset.secs),el.dataset.label,el.dataset.rowid);}
 function onTipBtn(el){openTip(el.dataset.ex,el.dataset.grp);}
-function addRow(){rows.push(emptyRow());persist();renderAll();updateFooter();setTimeout(function(){window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});},50);}
+function addRow(){rows.push(emptyRow());persist();renderAll();updateFooter();updateCalBar();updateCalBar();setTimeout(function(){window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});},50);}
 
 // ── SYNC ──────────────────────────────────────────────────
 function updateFooter(){
@@ -534,28 +613,50 @@ async function handleSync(){
   }
 }
 
-// ── TIMER ─────────────────────────────────────────────────
+// ── TIMER BAR ─────────────────────────────────────────────
 function startTimer(secs,label,rowId){
   clearInterval(timerInterval);
   timerRemaining=secs;timerTotal=secs;activeTimerRowId=rowId;
-  document.getElementById("timerLabel").textContent=label;
-  document.getElementById("timerOverlay").style.display="flex";
+  var bar=document.getElementById("timerBar");
+  document.getElementById("tbarLabel").textContent=label;
+  bar.style.display="block";
+  document.getElementById("syncFooter").style.bottom="60px";
+  // Shift app content up so bar doesn't cover last card
+  document.getElementById("app").style.paddingBottom="144px";
   tickTimer();
-  timerInterval=setInterval(function(){timerRemaining--;if(timerRemaining<=0){timerRemaining=0;clearInterval(timerInterval);}tickTimer();},1000);
-  rerenderCard(rowId);
+  timerInterval=setInterval(function(){
+    timerRemaining--;
+    if(timerRemaining<=0){timerRemaining=0;clearInterval(timerInterval);}
+    tickTimer();
+  },1000);
+  // Update rest button appearance on card
+  if(rowId) rerenderCard(rowId);
 }
+
 function tickTimer(){
   var min=Math.floor(timerRemaining/60),sec=timerRemaining%60;
-  document.getElementById("timerText").textContent=min+":"+(sec<10?"0":"")+sec;
+  var done=timerRemaining===0;
   var pct=timerTotal>0?timerRemaining/timerTotal:0;
-  var c=2*Math.PI*55;
-  document.getElementById("timerArc").setAttribute("stroke-dashoffset",c*(1-pct));
-  document.getElementById("timerArc").setAttribute("stroke",pct>0.4?"#3DBF7F":pct>0.15?"#F5A623":"#E05C5C");
-  document.getElementById("timerSub").textContent=timerRemaining===0?"REST DONE - GO":"RESTING";
+  var barColor=pct>0.5?"#F5A623":pct>0.2?"#E05C5C":"#E05C5C";
+  if(done){barColor="#3DBF7F";}
+  document.getElementById("tbarTime").textContent=done?"GO!":min+":"+(sec<10?"0":"")+sec;
+  document.getElementById("tbarTime").style.color=done?"#3DBF7F":pct>0.5?"#F5A623":"#E05C5C";
+  document.getElementById("tbarFill").style.width=(pct*100)+"%";
+  document.getElementById("tbarFill").style.background=barColor;
+  // Store original label on first tick before overwriting
+  var lblEl=document.getElementById("tbarLabel");
+  if(!lblEl.dataset.orig) lblEl.dataset.orig=lblEl.textContent;
+  lblEl.textContent=done?"REST DONE — GO!":lblEl.dataset.orig;
 }
+
 function cancelTimer(){
   clearInterval(timerInterval);
-  document.getElementById("timerOverlay").style.display="none";
+  document.getElementById("timerBar").style.display="none";
+  document.getElementById("syncFooter").style.bottom="0";
+  document.getElementById("app").style.paddingBottom="88px";
+  // Reset label storage
+  var lblEl=document.getElementById("tbarLabel");
+  if(lblEl) lblEl.dataset.orig="";
   if(activeTimerRowId){rerenderCard(activeTimerRowId);activeTimerRowId=null;}
 }
 
