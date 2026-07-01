@@ -104,7 +104,15 @@
     /* NOTES */
     .notes-inp{background:transparent;border:none;border-top:1px solid var(--border);color:var(--text3);font-size:11px;padding:7px 0 0;outline:none;width:100%}
     .notes-inp::placeholder{color:#222}
-    /* ADD BTN */
+    /* DAY SELECTOR */
+  .day-sel{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:0 10px 8px}
+  .day-btn{border:1px solid var(--border2);border-radius:9px;background:var(--bg2);color:var(--text3);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;padding:10px 4px;cursor:pointer;transition:all 0.15s}
+  .day-btn:active{transform:scale(0.97)}
+  .day-btn.heavy{border-color:#F5A62355;color:#F5A623}
+  .day-btn.light{border-color:#4F8EF755;color:#4F8EF7}
+  .day-btn.core{border-color:#3DBF7F55;color:#3DBF7F}
+  .day-btn.active{filter:brightness(1.3);font-size:14px}
+  /* ADD BTN */
     .add-btn{display:block;width:calc(100% - 20px);margin:12px 10px 0;background:var(--bg2);border:1px dashed var(--border2);border-radius:10px;color:var(--text3);font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:3px;padding:12px;cursor:pointer}
     /* FOOTER */
     .sync-footer{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;z-index:100;transition:bottom 0.2s}
@@ -138,7 +146,12 @@
     <div class="date-badge"><div class="date-num" id="dateNum"></div><div class="date-mon" id="dateMon"></div></div>
   </div>
   <div class="day-pill" id="dayPill"></div>
-  <div class="cal-bar" id="calBar">
+  <div class="day-sel">
+  <button id="planBtn-heavy" class="day-btn heavy" onclick="loadDayPlan('heavy')">&#129463; LEG HEAVY</button>
+  <button id="planBtn-light" class="day-btn light" onclick="loadDayPlan('light')">&#129463; LEG LIGHT</button>
+  <button id="planBtn-core" class="day-btn core" onclick="loadDayPlan('core')">&#127919; CORE</button>
+</div>
+<div class="cal-bar" id="calBar">
     <div><div class="cal-total" id="calTotal">~0 cal</div><div class="cal-label">Jeff today</div></div>
     <div class="cal-sub" id="calSub">Add exercises</div>
   </div>
@@ -177,7 +190,7 @@ var GROUP_EMOJI={Push:"💪",Pull:"🏋️",Legs:"🦵",Cardio:"🏃",Core:"🎯
 
 // Elbow-safe exercises for Jeff | Full range for JJ | Shared for Both
 var EXERCISE_MAP={
-  Push:["Pec Deck","Cable Fly","Lateral Raise (Dumbbells)","Rear Delt Machine","Chest Press Machine"],
+  Push:["Pec Deck","Dumbbell Pullover","Lateral Raise (Dumbbells)","Rear Delt Machine","Chest Press Machine"],
   Pull:["Straight Arm Pulldown","Face Pulls (Cable)","Machine Row","Lat Pulldown (Neutral Grip)","Seated Cable Row (Neutral Grip)"],
   Legs:["Leg Press","Romanian Deadlift (Dumbbells)","Calf Raise Machine","Hip Abductor Machine","Goblet Squat"],
   Cardio:["Incline Treadmill Walk","Treadmill Run","Elliptical","Stationary Bike","Stair Climber","Row Machine"],
@@ -185,10 +198,10 @@ var EXERCISE_MAP={
 };
 
 // Which exercises are safe for Jeff (elbow-safe only)
-var JEFF_SAFE={"Pec Deck":true,"Cable Fly":true,"Lateral Raise (Dumbbells)":true,"Rear Delt Machine":true,"Straight Arm Pulldown":true,"Face Pulls (Cable)":true,"Leg Press":true,"Romanian Deadlift (Dumbbells)":true,"Calf Raise Machine":true,"Hip Abductor Machine":true,"Goblet Squat":true,"Plank":true,"Cable Crunch":true,"Seated Leg Raise":true,"Ab Machine":true,"Russian Twist":true,"Dead Bug":true,"Incline Treadmill Walk":true,"Treadmill Run":true,"Elliptical":true,"Stationary Bike":true,"Stair Climber":true,"Row Machine":true};
+var JEFF_SAFE={"Pec Deck":true,"Dumbbell Pullover":true,"Lateral Raise (Dumbbells)":true,"Rear Delt Machine":true,"Straight Arm Pulldown":true,"Leg Press":true,"Romanian Deadlift (Dumbbells)":true,"Calf Raise Machine":true,"Hip Abductor Machine":true,"Goblet Squat":true,"Plank":true,"Cable Crunch":true,"Seated Leg Raise":true,"Ab Machine":true,"Russian Twist":true,"Dead Bug":true,"Incline Treadmill Walk":true,"Treadmill Run":true,"Elliptical":true,"Stationary Bike":true,"Stair Climber":true,"Row Machine":true};
 
 var TARGETS={
-  "Pec Deck":"3 sets x 15 reps","Cable Fly":"3 sets x 15-20 reps",
+  "Pec Deck":"3 sets x 15 reps","Dumbbell Pullover":"3 sets x 12-15 reps",
   "Lateral Raise (Dumbbells)":"3 sets x 15 reps","Rear Delt Machine":"3 sets x 15 reps",
   "Chest Press Machine":"4 sets x 12-15 reps",
   "Straight Arm Pulldown":"3 sets x 15-20 reps","Face Pulls (Cable)":"3 sets x 20 reps",
@@ -204,23 +217,24 @@ var TARGETS={
 };
 
 // Jeff defaults (lighter, elbow-healing)
-var DEF_W={"Pec Deck":[70,70,70],"Cable Fly":[25,25,25],"Lateral Raise (Dumbbells)":[15,15,15],"Rear Delt Machine":[50,50,50],"Chest Press Machine":[90,90,90,90],"Straight Arm Pulldown":[45,45,45],"Face Pulls (Cable)":[35,35,35],"Machine Row":[90,90,90,90],"Lat Pulldown (Neutral Grip)":[100,100,100,100],"Seated Cable Row (Neutral Grip)":[90,90,90],"Leg Press":[160,160,160,160],"Romanian Deadlift (Dumbbells)":[45,45,45],"Calf Raise Machine":[90,90,90],"Hip Abductor Machine":[70,70],"Goblet Squat":[35,35,35],"Plank":[0,0,0],"Cable Crunch":[45,45,45],"Seated Leg Raise":[0,0,0],"Ab Machine":[55,55,55],"Russian Twist":[12,12,12],"Dead Bug":[0,0,0],"Incline Treadmill Walk":[0]};
-var DEF_R={"Pec Deck":[15,15,15],"Cable Fly":[15,15,15],"Lateral Raise (Dumbbells)":[15,15,15],"Rear Delt Machine":[15,15,15],"Chest Press Machine":[12,12,12,12],"Straight Arm Pulldown":[15,15,15],"Face Pulls (Cable)":[20,20,20],"Machine Row":[12,12,12,12],"Lat Pulldown (Neutral Grip)":[12,12,12,12],"Seated Cable Row (Neutral Grip)":[12,12,12],"Leg Press":[15,15,15,15],"Romanian Deadlift (Dumbbells)":[12,12,12],"Calf Raise Machine":[20,20,20],"Hip Abductor Machine":[20,20],"Goblet Squat":[12,12,12],"Plank":[45,45,45],"Cable Crunch":[20,20,20],"Seated Leg Raise":[15,15,15],"Ab Machine":[15,15,15],"Russian Twist":[20,20,20],"Dead Bug":[10,10,10],"Incline Treadmill Walk":[40]};
+var DEF_W={"Pec Deck":[70,70,70],"Dumbbell Pullover":[25,25,25],"Lateral Raise (Dumbbells)":[15,15,15],"Rear Delt Machine":[50,50,50],"Chest Press Machine":[90,90,90,90],"Straight Arm Pulldown":[45,45,45],"Face Pulls (Cable)":[35,35,35],"Machine Row":[90,90,90,90],"Lat Pulldown (Neutral Grip)":[100,100,100,100],"Seated Cable Row (Neutral Grip)":[90,90,90],"Leg Press":[160,160,160,160],"Romanian Deadlift (Dumbbells)":[45,45,45],"Calf Raise Machine":[90,90,90],"Hip Abductor Machine":[70,70],"Goblet Squat":[35,35,35],"Plank":[0,0,0],"Cable Crunch":[45,45,45],"Seated Leg Raise":[0,0,0],"Ab Machine":[55,55,55],"Russian Twist":[12,12,12],"Dead Bug":[0,0,0],"Incline Treadmill Walk":[0]};
+var DEF_R={"Pec Deck":[15,15,15],"Dumbbell Pullover":[12,12,12],"Lateral Raise (Dumbbells)":[15,15,15],"Rear Delt Machine":[15,15,15],"Chest Press Machine":[12,12,12,12],"Straight Arm Pulldown":[15,15,15],"Face Pulls (Cable)":[20,20,20],"Machine Row":[12,12,12,12],"Lat Pulldown (Neutral Grip)":[12,12,12,12],"Seated Cable Row (Neutral Grip)":[12,12,12],"Leg Press":[15,15,15,15],"Romanian Deadlift (Dumbbells)":[12,12,12],"Calf Raise Machine":[20,20,20],"Hip Abductor Machine":[20,20],"Goblet Squat":[12,12,12],"Plank":[45,45,45],"Cable Crunch":[20,20,20],"Seated Leg Raise":[15,15,15],"Ab Machine":[15,15,15],"Russian Twist":[20,20,20],"Dead Bug":[10,10,10],"Incline Treadmill Walk":[40]};
 
 // JJ defaults (heavier, full range, 29yo at 280 lbs)
-var JJ_DEF_W={"Pec Deck":[100,100,100],"Cable Fly":[40,40,40],"Lateral Raise (Dumbbells)":[25,25,25],"Rear Delt Machine":[70,70,70],"Chest Press Machine":[150,150,150,150],"Straight Arm Pulldown":[65,65,65],"Face Pulls (Cable)":[50,50,50],"Machine Row":[150,150,150,150],"Lat Pulldown (Neutral Grip)":[130,130,130,130],"Seated Cable Row (Neutral Grip)":[130,130,130],"Leg Press":[240,240,240,240],"Romanian Deadlift (Dumbbells)":[65,65,65],"Calf Raise Machine":[130,130,130],"Hip Abductor Machine":[100,100],"Goblet Squat":[50,50,50],"Plank":[0,0,0],"Cable Crunch":[60,60,60],"Seated Leg Raise":[0,0,0],"Ab Machine":[70,70,70],"Russian Twist":[20,20,20],"Dead Bug":[0,0,0],"Incline Treadmill Walk":[0]};
-var JJ_DEF_R={"Pec Deck":[12,12,12],"Cable Fly":[12,12,12],"Lateral Raise (Dumbbells)":[12,12,12],"Rear Delt Machine":[12,12,12],"Chest Press Machine":[10,10,10,10],"Straight Arm Pulldown":[12,12,12],"Face Pulls (Cable)":[15,15,15],"Machine Row":[10,10,10,10],"Lat Pulldown (Neutral Grip)":[10,10,10,10],"Seated Cable Row (Neutral Grip)":[10,10,10],"Leg Press":[12,12,12,12],"Romanian Deadlift (Dumbbells)":[10,10,10],"Calf Raise Machine":[15,15,15],"Hip Abductor Machine":[15,15],"Goblet Squat":[10,10,10],"Plank":[30,30,30],"Cable Crunch":[15,15,15],"Seated Leg Raise":[12,12,12],"Ab Machine":[12,12,12],"Russian Twist":[15,15,15],"Dead Bug":[8,8,8],"Incline Treadmill Walk":[40]};
+var JJ_DEF_W={"Pec Deck":[100,100,100],"Dumbbell Pullover":[40,40,40],"Lateral Raise (Dumbbells)":[25,25,25],"Rear Delt Machine":[70,70,70],"Chest Press Machine":[150,150,150,150],"Straight Arm Pulldown":[65,65,65],"Face Pulls (Cable)":[50,50,50],"Machine Row":[150,150,150,150],"Lat Pulldown (Neutral Grip)":[130,130,130,130],"Seated Cable Row (Neutral Grip)":[130,130,130],"Leg Press":[240,240,240,240],"Romanian Deadlift (Dumbbells)":[65,65,65],"Calf Raise Machine":[130,130,130],"Hip Abductor Machine":[100,100],"Goblet Squat":[50,50,50],"Plank":[0,0,0],"Cable Crunch":[60,60,60],"Seated Leg Raise":[0,0,0],"Ab Machine":[70,70,70],"Russian Twist":[20,20,20],"Dead Bug":[0,0,0],"Incline Treadmill Walk":[0]};
+var JJ_DEF_R={"Pec Deck":[12,12,12],"Dumbbell Pullover":[10,10,10],"Lateral Raise (Dumbbells)":[12,12,12],"Rear Delt Machine":[12,12,12],"Chest Press Machine":[10,10,10,10],"Straight Arm Pulldown":[12,12,12],"Face Pulls (Cable)":[15,15,15],"Machine Row":[10,10,10,10],"Lat Pulldown (Neutral Grip)":[10,10,10,10],"Seated Cable Row (Neutral Grip)":[10,10,10],"Leg Press":[12,12,12,12],"Romanian Deadlift (Dumbbells)":[10,10,10],"Calf Raise Machine":[15,15,15],"Hip Abductor Machine":[15,15],"Goblet Squat":[10,10,10],"Plank":[30,30,30],"Cable Crunch":[15,15,15],"Seated Leg Raise":[12,12,12],"Ab Machine":[12,12,12],"Russian Twist":[15,15,15],"Dead Bug":[8,8,8],"Incline Treadmill Walk":[40]};
 
 // MET for calorie calc (Jeff = 99kg)
 var JEFF_KG=99;
-var MET={"Pec Deck":4.0,"Cable Fly":4.0,"Lateral Raise (Dumbbells)":3.5,"Rear Delt Machine":3.5,"Chest Press Machine":5.0,"Straight Arm Pulldown":4.5,"Face Pulls (Cable)":3.5,"Machine Row":5.5,"Lat Pulldown (Neutral Grip)":5.0,"Seated Cable Row (Neutral Grip)":5.0,"Leg Press":6.0,"Romanian Deadlift (Dumbbells)":6.0,"Calf Raise Machine":3.5,"Hip Abductor Machine":3.0,"Goblet Squat":5.5,"Plank":3.5,"Cable Crunch":3.5,"Seated Leg Raise":3.5,"Ab Machine":3.5,"Russian Twist":4.0,"Dead Bug":3.0,"Incline Treadmill Walk":7.5};
+var MET={"Pec Deck":4.0,"Lateral Raise (Dumbbells)":3.5,"Rear Delt Machine":3.5,"Chest Press Machine":5.0,"Straight Arm Pulldown":4.5,"Face Pulls (Cable)":3.5,"Machine Row":5.5,"Lat Pulldown (Neutral Grip)":5.0,"Seated Cable Row (Neutral Grip)":5.0,"Leg Press":6.0,"Romanian Deadlift (Dumbbells)":6.0,"Calf Raise Machine":3.5,"Hip Abductor Machine":3.0,"Goblet Squat":5.5,"Plank":3.5,"Cable Crunch":3.5,"Seated Leg Raise":3.5,"Ab Machine":3.5,"Russian Twist":4.0,"Dead Bug":3.0,"Incline Treadmill Walk":7.5};
 
-var VIDEOS={"Pec Deck":"https://www.youtube.com/results?search_query=pec+deck+fly+machine+correct+form","Cable Fly":"https://www.youtube.com/results?search_query=cable+fly+chest+proper+form","Lateral Raise (Dumbbells)":"https://www.youtube.com/results?search_query=lateral+raise+proper+form+shoulder+safe","Rear Delt Machine":"https://www.youtube.com/results?search_query=rear+delt+machine+proper+form","Chest Press Machine":"https://www.youtube.com/results?search_query=chest+press+machine+proper+form+men+over+50","Straight Arm Pulldown":"https://www.youtube.com/results?search_query=straight+arm+pulldown+cable+lat+form","Face Pulls (Cable)":"https://www.youtube.com/results?search_query=face+pulls+cable+proper+form+shoulder+health","Machine Row":"https://www.youtube.com/results?search_query=machine+row+proper+form+back","Lat Pulldown (Neutral Grip)":"https://www.youtube.com/results?search_query=lat+pulldown+neutral+grip+proper+form","Seated Cable Row (Neutral Grip)":"https://www.youtube.com/results?search_query=seated+cable+row+proper+form+back","Leg Press":"https://www.youtube.com/results?search_query=leg+press+proper+form+knee+safe","Romanian Deadlift (Dumbbells)":"https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+proper+form","Calf Raise Machine":"https://www.youtube.com/results?search_query=calf+raise+machine+proper+form","Hip Abductor Machine":"https://www.youtube.com/results?search_query=hip+abductor+machine+proper+form+glutes","Goblet Squat":"https://www.youtube.com/results?search_query=goblet+squat+proper+form+knee+safe","Plank":"https://www.youtube.com/results?search_query=perfect+plank+form+core","Cable Crunch":"https://www.youtube.com/results?search_query=cable+crunch+ab+proper+form","Incline Treadmill Walk":"https://www.youtube.com/results?search_query=incline+treadmill+walk+fat+burn+form"};
+var VIDEOS={"Dumbbell Pullover":"https://www.youtube.com/results?search_query=dumbbell+pullover+proper+form+tricep+chest","Pec Deck":"https://www.youtube.com/results?search_query=pec+deck+fly+machine+correct+form","Lateral Raise (Dumbbells)":"https://www.youtube.com/results?search_query=lateral+raise+proper+form+shoulder+safe","Rear Delt Machine":"https://www.youtube.com/results?search_query=rear+delt+machine+proper+form","Chest Press Machine":"https://www.youtube.com/results?search_query=chest+press+machine+proper+form+men+over+50","Straight Arm Pulldown":"https://www.youtube.com/results?search_query=straight+arm+pulldown+cable+lat+form","Face Pulls (Cable)":"https://www.youtube.com/results?search_query=face+pulls+cable+proper+form+shoulder+health","Machine Row":"https://www.youtube.com/results?search_query=machine+row+proper+form+back","Lat Pulldown (Neutral Grip)":"https://www.youtube.com/results?search_query=lat+pulldown+neutral+grip+proper+form","Seated Cable Row (Neutral Grip)":"https://www.youtube.com/results?search_query=seated+cable+row+proper+form+back","Leg Press":"https://www.youtube.com/results?search_query=leg+press+proper+form+knee+safe","Romanian Deadlift (Dumbbells)":"https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+proper+form","Calf Raise Machine":"https://www.youtube.com/results?search_query=calf+raise+machine+proper+form","Hip Abductor Machine":"https://www.youtube.com/results?search_query=hip+abductor+machine+proper+form+glutes","Goblet Squat":"https://www.youtube.com/results?search_query=goblet+squat+proper+form+knee+safe","Plank":"https://www.youtube.com/results?search_query=perfect+plank+form+core","Cable Crunch":"https://www.youtube.com/results?search_query=cable+crunch+ab+proper+form","Incline Treadmill Walk":"https://www.youtube.com/results?search_query=incline+treadmill+walk+fat+burn+form"};
 
 // Technique tips
 var TIPS={};
+TIPS["Dumbbell Pullover"]=["Lie flat on a bench holding one dumbbell with both hands, arms extended straight toward the ceiling.","Lower the weight slowly in an arc behind your head, keeping arms almost fully straight — slight soft bend only. This is what keeps the elbow safe.","Feel the stretch across your chest and lats at the bottom, then pull back up in the same arc. The long head of the tricep works hard at the bottom of this movement.","Keep your core braced and lower back pressed to the bench throughout. Do not let the hips rise as the weight goes overhead."];
 TIPS["Pec Deck"]=["Adjust seat so elbows are at shoulder height and arms form a 90-degree angle.","Squeeze chest hard at the front — hold 1 second. This peak contraction is where the muscle work happens.","Control the return. Let it open only as far as is comfortable. Never force a deep stretch with this machine.","Elbows stay on the pads throughout. If they lift off, the weight is too heavy."];
-TIPS["Cable Fly"]=["Set cables at chest height. Step forward with a slight forward lean from the hips.","Bring hands together in an arc with elbows slightly bent and fixed — squeeze chest at the peak, hold 1 second.","Return slowly over 2-3 seconds. The eccentric phase at 15-20 reps is where muscle and calorie burn compounds.","The fixed elbow angle is critical — no dynamic bending. This is what makes it safe for your elbow."];
+
 TIPS["Lateral Raise (Dumbbells)"]=["Light weight, strict form. Raise to shoulder height only. Never higher — this is a corrective movement.","Lead with elbows, slight thumb-down rotation at the top. Keep shoulders down throughout — no shrugging.","15 reps strict beats 10 reps sloppy. If you swing to get it up, the weight is too heavy.","Builds medial deltoid width and protects the rotator cuff long-term."];
 TIPS["Rear Delt Machine"]=["Sit facing the pad. Set handles so arms are at shoulder height with a slight elbow bend.","Drive handles back and wide, squeezing rear delts hard at full range. Pause 1 second.","This exercise directly counteracts the anterior dominance causing your shoulder impingement. Do not skip it.","Light weight, 15-20 reps, full contraction. Mind-muscle connection here takes a few sessions to develop."];
 TIPS["Chest Press Machine"]=["Sit tall, lower back against the pad. Grip handles at mid-chest height.","Push straight out exhaling on the press. Squeeze chest at full extension for 1 second.","Elbows at 45 degrees, not flared wide. Protects the shoulder and keeps the chest working.","Short 60-second rest keeps heart rate elevated for fat burning."];
@@ -291,6 +305,91 @@ function updateCalBar(){
   var s=document.getElementById("calSub");if(s)s.textContent=c>300?"Great burn!":c>150?"Keep going!":"Add exercises";
 }
 
+// ── DAY PLANS ─────────────────────────────────────────────
+var currentPlan=null;
+
+var DAY_PLANS={
+  heavy:[
+    {ex:"Leg Press",grp:"Legs",who:"both"},
+    {ex:"Romanian Deadlift (Dumbbells)",grp:"Legs",who:"both"},
+    {ex:"Calf Raise Machine",grp:"Legs",who:"both"},
+    {ex:"Hip Abductor Machine",grp:"Legs",who:"both"},
+    {ex:"Pec Deck",grp:"Push",who:"jeff"},
+    {ex:"Rear Delt Machine",grp:"Push",who:"jeff"},
+    {ex:"Straight Arm Pulldown",grp:"Pull",who:"jeff"},
+    {ex:"Dumbbell Pullover",grp:"Push",who:"jeff"},
+    {ex:"Chest Press Machine",grp:"Push",who:"jj"},
+    {ex:"Machine Row",grp:"Pull",who:"jj"}
+  ],
+  light:[
+    {ex:"Leg Press",grp:"Legs",who:"both",jW:[130,130,130],jR:[20,20,20],jjW:[195,195,195],jjR:[15,15,15]},
+    {ex:"Romanian Deadlift (Dumbbells)",grp:"Legs",who:"both",jW:[35,35,35],jR:[15,15,15],jjW:[50,50,50],jjR:[12,12,12]},
+    {ex:"Calf Raise Machine",grp:"Legs",who:"both",jW:[70,70,70],jR:[20,20,20],jjW:[100,100,100],jjR:[20,20,20]},
+    {ex:"Hip Abductor Machine",grp:"Legs",who:"both",jW:[55,55],jR:[20,20],jjW:[80,80],jjR:[20,20]},
+    {ex:"Pec Deck",grp:"Push",who:"jeff",jW:[55,55,55],jR:[20,20,20]},
+    {ex:"Rear Delt Machine",grp:"Push",who:"jeff",jW:[40,40,40],jR:[20,20,20]},
+    {ex:"Straight Arm Pulldown",grp:"Pull",who:"jeff",jW:[35,35,35],jR:[20,20,20]},
+    {ex:"Dumbbell Pullover",grp:"Push",who:"jeff",jW:[20,20,20],jR:[15,15,15]},
+    {ex:"Chest Press Machine",grp:"Push",who:"jj",jjW:[120,120,120],jjR:[12,12,12]},
+    {ex:"Machine Row",grp:"Pull",who:"jj",jjW:[120,120,120],jjR:[12,12,12]}
+  ],
+  core:[
+    {ex:"Incline Treadmill Walk",grp:"Cardio",who:"both"},
+    {ex:"Plank",grp:"Core",who:"both"},
+    {ex:"Cable Crunch",grp:"Core",who:"both"},
+    {ex:"Seated Leg Raise",grp:"Core",who:"both"},
+    {ex:"Ab Machine",grp:"Core",who:"both"},
+    {ex:"Russian Twist",grp:"Core",who:"both"},
+    {ex:"Dead Bug",grp:"Core",who:"jeff"}
+  ]
+};
+
+// Light day target overrides — remind both that light still burns
+var LIGHT_TARGETS={
+  "Leg Press":"3 sets x 15-20 reps — lighter, but 20 reps will feel heavy",
+  "Romanian Deadlift (Dumbbells)":"3 sets x 15 reps — control the descent",
+  "Calf Raise Machine":"3 sets x 20 reps — full stretch every rep",
+  "Hip Abductor Machine":"2 sets x 20 reps — squeeze at the top",
+  "Pec Deck":"3 sets x 15-20 reps — peak squeeze each rep",
+  "Rear Delt Machine":"3 sets x 15-20 reps — slow and deliberate",
+  "Straight Arm Pulldown":"3 sets x 20 reps — feel the lat stretch",
+  "Dumbbell Pullover":"3 sets x 15 reps — full arc overhead",
+  "Chest Press Machine":"3 sets x 12 reps — controlled",
+  "Machine Row":"3 sets x 12 reps — full contraction"
+};
+
+function loadDayPlan(planName){
+  var plan=DAY_PLANS[planName];
+  if(!plan) return;
+  currentPlan=planName;
+  // Update button highlights
+  ["heavy","light","core"].forEach(function(p){
+    var btn=document.getElementById("planBtn-"+p);
+    if(btn) btn.className="day-btn "+(p==="heavy"?"heavy":p==="light"?"light":"core")+(planName===p?" active":"");
+  });
+  rows=plan.map(function(tmpl){
+    var r=emptyRow();
+    r.exercise=tmpl.ex;
+    r.group=tmpl.grp;
+    r.person=tmpl.who;
+    // Jeff sets: use template overrides (light day) or history/defaults (heavy day)
+    if(tmpl.jW){
+      r.sets=tmpl.jW.map(function(w,i){return{weight:String(w),reps:String(tmpl.jR[i]||""),done:false};});
+    } else {
+      r.sets=getDefSets(tmpl.ex,DEF_W,DEF_R,HISTORY_KEY);
+    }
+    // JJ sets
+    if(tmpl.jjW){
+      r.jjSets=tmpl.jjW.map(function(w,i){return{weight:String(w),reps:String(tmpl.jjR[i]||""),done:false};});
+    } else {
+      r.jjSets=getDefSets(tmpl.ex,JJ_DEF_W,JJ_DEF_R,JJ_HIST_KEY);
+    }
+    return r;
+  });
+  persist();renderAll();updateFooter();updateCalBar();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
 // ── INIT ───────────────────────────────────────────────────
 function init(){
   var now=new Date();
@@ -312,7 +411,7 @@ function buildCard(row,idx){
   var showJeff=row.person==="jeff"||row.person==="both";
   var showJJ=row.person==="jj"||row.person==="both";
   var isTimerRow=activeTimerRowId===row.id;
-  var target=TARGETS[row.exercise]||"";
+  var target=(currentPlan==="light"&&LIGHT_TARGETS[row.exercise])?LIGHT_TARGETS[row.exercise]:(TARGETS[row.exercise]||"");
   var jeffSafe=!row.exercise||row.exercise==="__custom__"||JEFF_SAFE[row.exercise];
 
   // Tappable sequence chips
